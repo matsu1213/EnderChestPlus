@@ -40,7 +40,7 @@ public class EnderChestPlusCommand implements CommandExecutor {
 		}
 
 		if (target == null && uuid == null) {
-			p.sendMessage(ChatColor.RED + "現在オンラインのプレイﾔｰ名かUUIDを入力してください。");
+			p.sendMessage(ChatColor.RED + "現在オンラインのプレイヤー名かUUIDを入力してください。");
 			return true;
 		}
 
