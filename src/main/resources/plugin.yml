@@ -1,0 +1,13 @@
+name: EnderChestPlus
+main: jp.azisaba.lgw.ecplus.EnderChestPlus
+version: 1.0.2
+author: siloneco
+description: "EnderChest expansion plugin"
+commands:
+  enderchestplus:
+    usage: /{LABEL} [Player/UUID]
+    permission: enderchestplus.command.enderchestplus
+    aliases: [ecp]
+permissions:
+  enderchestplus.command.enderchestplus:
+    default: op
