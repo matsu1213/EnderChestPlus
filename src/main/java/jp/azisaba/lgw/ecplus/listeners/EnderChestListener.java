@@ -2,7 +2,6 @@ package jp.azisaba.lgw.ecplus.listeners;
 
 import java.util.UUID;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
@@ -17,6 +16,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import net.md_5.bungee.api.ChatColor;
 
 import jp.azisaba.lgw.ecplus.EnderChestPlus;
 import jp.azisaba.lgw.ecplus.InventoryData;
@@ -122,6 +123,12 @@ public class EnderChestListener implements Listener {
             return;
         }
 
+        if ( e.getCursor() != null && e.getCursor().getType() != Material.AIR ) {
+            e.setCancelled(true);
+            p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+            return;
+        }
+
         if ( clickedInv == null ) {
             InventoryData data;
             UUID looking = loader.getLookingAt(p);
@@ -155,6 +162,12 @@ public class EnderChestListener implements Listener {
             return;
         }
         if ( e.getClick() != ClickType.LEFT && e.getClick() != ClickType.RIGHT ) {
+            return;
+        }
+
+        if ( e.getCursor() != null && e.getCursor().getType() != Material.AIR ) {
+            e.setCancelled(true);
+            p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
             return;
         }
 
