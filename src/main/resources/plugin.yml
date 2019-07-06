@@ -1,8 +1,8 @@
-name: EnderChestPlus
+name: ${project.name}
 main: jp.azisaba.lgw.ecplus.EnderChestPlus
-version: 1.0.2
+version: ${project.version}
 author: siloneco
-description: "EnderChest expansion plugin"
+description: ${project.description}
 commands:
   enderchestplus:
     usage: /{LABEL} [Player/UUID]
