@@ -45,6 +45,10 @@
 			<id>spigot-repo</id>
 			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
 		</repository>
+		<repository>
+			<id>rayzr-repo</id>
+			<url>https://cdn.rawgit.com/Rayzr522/maven-repo/master/</url>
+		</repository>
 	</repositories>
 
 	<dependencies>
@@ -52,6 +56,16 @@
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
 			<version>1.12.2-R0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>me.rayzr522</groupId>
+			<artifactId>jsonmessage</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.8</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

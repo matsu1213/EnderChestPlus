@@ -7,30 +7,35 @@ import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import com.google.common.base.Strings;
+
+import lombok.RequiredArgsConstructor;
+
+import jp.azisaba.lgw.ecplus.DropItemContainer;
 import jp.azisaba.lgw.ecplus.EnderChestPlus;
 import jp.azisaba.lgw.ecplus.InventoryData;
 import jp.azisaba.lgw.ecplus.InventoryLoader;
 import jp.azisaba.lgw.ecplus.utils.Chat;
+import me.rayzr522.jsonmessage.JSONMessage;
 
+@RequiredArgsConstructor
 public class EnderChestListener implements Listener {
 
     private final EnderChestPlus plugin;
     private final InventoryLoader loader;
-
-    public EnderChestListener(EnderChestPlus plugin, InventoryLoader loader) {
-        this.plugin = plugin;
-        this.loader = loader;
-    }
+    private final DropItemContainer dropItemContainer;
 
     @EventHandler
     public void onClickEnderChest(PlayerInteractEvent e) {
@@ -199,6 +204,65 @@ public class EnderChestListener implements Listener {
         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_HAT, 1, 1);
     }
 
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onDropItem(PlayerDropItemEvent e) {
+        Player p = e.getPlayer();
+
+        if ( p.getOpenInventory() == null || p.getOpenInventory().getTopInventory() == null ) {
+            return;
+        }
+
+        Inventory inv = p.getOpenInventory().getTopInventory();
+
+        if ( inv.getTitle().equals(EnderChestPlus.mainEnderChestTitle) ) {
+            return;
+        }
+        if ( !inv.getTitle().startsWith(EnderChestPlus.enderChestTitlePrefix) ) {
+            return;
+        }
+
+        e.setCancelled(true);
+
+        ItemStack item = e.getItemDrop().getItemStack().clone();
+        InventoryData data = loader.getInventoryData(p);
+
+        if ( canGetItem(p, item) ) {
+            return;
+        }
+
+        int page = data.addItemInEmptySlot(item);
+
+        if ( page >= 0 ) {
+            p.sendMessage(Chat.f("&cインベントリに空きがないのでエンダーチェストの &a{0}ページ &cにアイテムを追加しました。", page + 1));
+            return;
+        } else {
+
+            String id = dropItemContainer.addItem(p, item);
+
+            JSONMessage msg = JSONMessage.create();
+
+            msg.then(Chat.f("&a{0}", Strings.repeat("=", 35))).newline();
+            msg.newline();
+            msg.then(Chat.f("&eアイテム&a: &r{0}", item.getType().toString())).newline();
+
+            if ( item.hasItemMeta() && item.getItemMeta().hasDisplayName() )
+                msg.then(Chat.f("&e名前&a: &r{0}", item.getItemMeta().getDisplayName())).newline();
+
+            msg.then(Chat.f("&e個数&a: &r{0}個", item.getAmount())).newline();
+            msg.newline();
+            msg.then(Chat.f("{0}&c&l[ここをクリックで受け取りGUIを開く]", Strings.repeat(" ", 5))).runCommand("/enderchestplus:receivedropped " + id).newline();
+            msg.newline();
+            msg.then(Chat.f("&a{0}", Strings.repeat("=", 35)));
+
+            p.sendMessage(Chat.f("&c[警告] &eエンダーチェストにもインベントリにもアイテムが入らなかったので、アイテムが消滅しました。"));
+            p.sendMessage(Chat.f("&c[警告] &e以下、&aアイテム情報&eと&a受け取りボタン&eです。"));
+            msg.send(p);
+
+            p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+            return;
+        }
+    }
+
     @EventHandler
     public void onCloseInventory(InventoryCloseEvent e) {
         if ( !(e.getPlayer() instanceof Player) ) {
@@ -218,5 +282,36 @@ public class EnderChestListener implements Listener {
                 }
             }
         }.runTaskLater(plugin, 1);
+    }
+
+    private boolean canGetItem(Player p, ItemStack item) {
+        if ( p.getInventory().firstEmpty() >= 0 ) {
+            return true;
+        }
+
+        ItemStack testItem = item.clone();
+        testItem.setAmount(1);
+        int itemAmount = item.getAmount();
+        for ( int i = 0; i < p.getInventory().getSize(); i++ ) {
+            ItemStack slotItem = p.getInventory().getItem(i);
+            if ( slotItem == null || slotItem.getType() == Material.AIR ) {
+                continue;
+            }
+
+            int slotItemAmount = slotItem.getAmount();
+            slotItem = slotItem.clone();
+            slotItem.setAmount(1);
+
+            if ( slotItem.equals(testItem) ) {
+                itemAmount -= (slotItem.getMaxStackSize() - slotItemAmount);
+            }
+        }
+
+        if (itemAmount <= 0) {
+            return true;
+        }
+
+        item.setAmount(itemAmount);
+        return false;
     }
 }

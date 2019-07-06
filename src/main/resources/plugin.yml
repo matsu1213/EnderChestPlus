@@ -8,6 +8,9 @@ commands:
     usage: /{LABEL} [Player/UUID]
     permission: enderchestplus.command.enderchestplus
     aliases: [ecp]
+  receivedropped:
+    usage: /{LABEL}
+    permission: enderchestplus.command.receivedropped
 permissions:
   enderchestplus.command.enderchestplus:
     default: op

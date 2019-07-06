@@ -7,8 +7,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import lombok.Getter;
+
 import jp.azisaba.lgw.ecplus.commands.EnderChestPlusCommand;
+import jp.azisaba.lgw.ecplus.commands.ReceiveDroppedCommand;
 import jp.azisaba.lgw.ecplus.listeners.BuyInventoryListener;
+import jp.azisaba.lgw.ecplus.listeners.DroppedItemListener;
 import jp.azisaba.lgw.ecplus.listeners.EnderChestListener;
 import jp.azisaba.lgw.ecplus.listeners.LoadInventoryDataListener;
 import jp.azisaba.lgw.ecplus.utils.Chat;
@@ -20,6 +24,9 @@ public class EnderChestPlus extends JavaPlugin {
     private static PluginConfig config;
     public static File inventoryDataFile;
 
+    @Getter
+    private DropItemContainer dropItemContainer = null;
+    @Getter
     private InventoryLoader loader = null;
 
     @Override
@@ -27,6 +34,8 @@ public class EnderChestPlus extends JavaPlugin {
 
         inventoryDataFile = new File(getDataFolder(), "Inventories");
         loader = new InventoryLoader(this);
+        dropItemContainer = new DropItemContainer(this);
+        dropItemContainer.load();
 
         EnderChestPlus.config = new PluginConfig(this);
         EnderChestPlus.config.loadConfig();
@@ -37,18 +46,23 @@ public class EnderChestPlus extends JavaPlugin {
             });
         }
 
-        Bukkit.getPluginManager().registerEvents(new EnderChestListener(this, loader), this);
+        Bukkit.getPluginManager().registerEvents(new EnderChestListener(this, loader, dropItemContainer), this);
         Bukkit.getPluginManager().registerEvents(new LoadInventoryDataListener(loader), this);
         Bukkit.getPluginManager().registerEvents(new BuyInventoryListener(loader), this);
+        Bukkit.getPluginManager().registerEvents(new DroppedItemListener(dropItemContainer), this);
 
         Bukkit.getPluginCommand("enderchestplus").setExecutor(new EnderChestPlusCommand(loader));
-        Bukkit.getPluginCommand("enderchestplus").setPermissionMessage(Chat.f("{0}&c", config.chatPrefix));
+        Bukkit.getPluginCommand("enderchestplus").setPermissionMessage(Chat.f("{0}&c権限がありません！", config.chatPrefix));
+        Bukkit.getPluginCommand("receivedropped").setExecutor(new ReceiveDroppedCommand(dropItemContainer));
+        Bukkit.getPluginCommand("receivedropped").setPermissionMessage(Chat.f("{0}&c権限がありません！", config.chatPrefix));
 
         Bukkit.getLogger().info(getName() + " enabled.");
     }
 
     @Override
     public void onDisable() {
+
+        dropItemContainer.save();
 
         Bukkit.getOnlinePlayers().forEach(player -> {
             if ( player.getOpenInventory() == null ) {

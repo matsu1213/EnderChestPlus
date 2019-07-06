@@ -29,6 +29,30 @@ public class InventoryData {
         load();
     }
 
+    public int addItemInEmptySlot(ItemStack item) {
+
+        int page = -1;
+
+        for ( int i = 0; i < 54; i++ ) {
+            if ( !inventories.containsKey(i) ) {
+                continue;
+            }
+
+            Inventory inv = inventories.get(i);
+
+            int slot = inv.firstEmpty();
+            if ( slot < 0 ) {
+                continue;
+            }
+
+            inv.setItem(slot, item);
+            page = i;
+            break;
+        }
+
+        return page;
+    }
+
     private void load() {
         File file = new File(EnderChestPlus.inventoryDataFile, uuid.toString() + ".yml");
         if ( !file.exists() ) {
