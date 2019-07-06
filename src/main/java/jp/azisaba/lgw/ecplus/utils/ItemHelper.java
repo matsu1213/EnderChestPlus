@@ -1,4 +1,4 @@
-package jp.azisaba.lgw.ecplus;
+package jp.azisaba.lgw.ecplus.utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
