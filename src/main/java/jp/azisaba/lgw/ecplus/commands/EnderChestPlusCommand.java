@@ -3,13 +3,13 @@ package jp.azisaba.lgw.ecplus.commands;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import jp.azisaba.lgw.ecplus.InventoryLoader;
+import jp.azisaba.lgw.ecplus.utils.Chat;
 
 public class EnderChestPlusCommand implements CommandExecutor {
 
@@ -27,7 +27,7 @@ public class EnderChestPlusCommand implements CommandExecutor {
         Player p = (Player) sender;
 
         if ( args.length <= 0 ) {
-            p.sendMessage(ChatColor.RED + "Usage: " + cmd.getUsage().replace("{LABEL}", label));
+            p.sendMessage(Chat.f("&cUsage: {0}", cmd.getUsage().replace("{LABEL}", label)));
             return true;
         }
 
@@ -40,7 +40,7 @@ public class EnderChestPlusCommand implements CommandExecutor {
         }
 
         if ( target == null && uuid == null ) {
-            p.sendMessage(ChatColor.RED + "現在オンラインのプレイヤー名かUUIDを入力してください。");
+            p.sendMessage(Chat.f("&c現在オンラインのプレイヤー名かUUIDを入力してください。"));
             return true;
         }
 

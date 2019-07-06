@@ -6,12 +6,13 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+import jp.azisaba.lgw.ecplus.utils.Chat;
 
 public class InventoryData {
 
@@ -47,9 +48,7 @@ public class InventoryData {
                     continue;
                 }
 
-                Inventory inv = Bukkit.createInventory(null, 9 * 6,
-                        EnderChestPlus.enderChestTitlePrefix + " " + ChatColor.YELLOW + "- " + ChatColor.RED + "Page "
-                                + (keyInt + 1));
+                Inventory inv = Bukkit.createInventory(null, 9 * 6, Chat.f("{0} &e- &cPage {1}", EnderChestPlus.enderChestTitlePrefix, keyInt + 1));
                 for ( String key2 : conf.getConfigurationSection(key).getKeys(false) ) {
                     ItemStack item = conf.getItemStack(key + "." + key2, null);
                     if ( item == null ) {
@@ -74,9 +73,7 @@ public class InventoryData {
                 continue;
             }
 
-            Inventory inv = Bukkit.createInventory(null, 6 * 9,
-                    EnderChestPlus.enderChestTitlePrefix + " " + ChatColor.YELLOW + "- " + ChatColor.RED + "Page "
-                            + (i + 1));
+            Inventory inv = Bukkit.createInventory(null, 6 * 9, Chat.f("{0} &e- &cPage {1}", EnderChestPlus.enderChestTitlePrefix, i + 1));
             inventories.put(i, inv);
         }
     }
@@ -119,9 +116,7 @@ public class InventoryData {
 
     public void initializeInventory(int page) {
         inventories.put(page,
-                Bukkit.createInventory(null, 9 * 6,
-                        EnderChestPlus.enderChestTitlePrefix + " " + ChatColor.YELLOW + "- " + ChatColor.RED + "Page "
-                                + (page + 1)));
+                Bukkit.createInventory(null, 9 * 6, Chat.f("{0} &e- &cPage {1}", EnderChestPlus.enderChestTitlePrefix, page + 1)));
     }
 
     private int isPositive(String str) {

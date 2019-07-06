@@ -9,10 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
+
+import jp.azisaba.lgw.ecplus.utils.Chat;
 
 public class PluginConfig {
 
@@ -57,7 +58,7 @@ public class PluginConfig {
                         String msg = (String) field.get(this);
                         conf.set(path, msg);
 
-                        msg = ChatColor.translateAlternateColorCodes('&', msg);
+                        msg = Chat.f(msg);
                         field.set(this, msg);
                     } else if ( anno.type() == OptionType.SOUND ) {
                         conf.set(path, field.get(this).toString());
@@ -127,7 +128,7 @@ public class PluginConfig {
 
                         String unformatMessage = conf.getString(path);
 
-                        unformatMessage = ChatColor.translateAlternateColorCodes('&', unformatMessage);
+                        unformatMessage = Chat.f(unformatMessage);
 
                         field.set(this, unformatMessage);
                     } else if ( anno.type() == OptionType.LOCATION_LIST ) {

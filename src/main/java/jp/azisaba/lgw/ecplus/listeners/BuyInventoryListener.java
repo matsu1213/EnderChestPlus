@@ -2,7 +2,6 @@ package jp.azisaba.lgw.ecplus.listeners;
 
 import java.util.UUID;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -15,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import jp.azisaba.lgw.ecplus.EnderChestPlus;
 import jp.azisaba.lgw.ecplus.InventoryData;
 import jp.azisaba.lgw.ecplus.InventoryLoader;
+import jp.azisaba.lgw.ecplus.utils.Chat;
 
 public class BuyInventoryListener implements Listener {
 
@@ -35,8 +35,7 @@ public class BuyInventoryListener implements Listener {
         Inventory opening = e.getInventory();
         ItemStack clickedItem = e.getCurrentItem();
 
-        if ( !ChatColor.stripColor(opening.getTitle())
-                .startsWith(ChatColor.stripColor(EnderChestPlus.enderChestTitlePrefix) + " - Unlock Page ") ) {
+        if ( !opening.getTitle().startsWith(Chat.f("{0}&a - &cUnlock Page", EnderChestPlus.enderChestTitlePrefix)) ) {
             return;
         }
 
@@ -48,8 +47,7 @@ public class BuyInventoryListener implements Listener {
 
         int page;
         try {
-            page = Integer.parseInt(ChatColor.stripColor(opening.getTitle())
-                    .substring(ChatColor.stripColor(opening.getTitle()).lastIndexOf(" ") + 1)) - 1;
+            page = Integer.parseInt(Chat.r(opening.getTitle()).substring(Chat.r(opening.getTitle()).lastIndexOf(" ") + 1)) - 1;
         } catch ( Exception ex ) {
             ex.printStackTrace();
             return;
@@ -75,10 +73,10 @@ public class BuyInventoryListener implements Listener {
                 data2.initializeInventory(page);
                 p.openInventory(InventoryLoader.getMainInventory(data2));
 
-                p.sendMessage(ChatColor.GREEN + "購入に成功しました！");
+                p.sendMessage(Chat.f("&a購入に成功しました！"));
                 p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BELL, 2, 1);
             } else {
-                p.sendMessage(ChatColor.RED + "購入するためのアイテムが足りません！");
+                p.sendMessage(Chat.f("&c購入するためのアイテムが足りません！"));
                 p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
                 p.closeInventory();
             }

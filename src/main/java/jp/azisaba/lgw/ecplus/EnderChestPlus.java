@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -12,12 +11,12 @@ import jp.azisaba.lgw.ecplus.commands.EnderChestPlusCommand;
 import jp.azisaba.lgw.ecplus.listeners.BuyInventoryListener;
 import jp.azisaba.lgw.ecplus.listeners.EnderChestListener;
 import jp.azisaba.lgw.ecplus.listeners.LoadInventoryDataListener;
+import jp.azisaba.lgw.ecplus.utils.Chat;
 
 public class EnderChestPlus extends JavaPlugin {
 
-    public static final String enderChestTitlePrefix = ChatColor.RED + "EnderChest" + ChatColor.AQUA + "+";
-    public static final String mainEnderChestTitle = enderChestTitlePrefix + " " + ChatColor.GREEN + "- "
-            + ChatColor.YELLOW + "Main";
+    public static final String enderChestTitlePrefix = Chat.f("&cEnderChest&b+");
+    public static final String mainEnderChestTitle = Chat.f("{0} &a- &eMain", enderChestTitlePrefix);
     private static PluginConfig config;
     public static File inventoryDataFile;
 
@@ -43,7 +42,7 @@ public class EnderChestPlus extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new BuyInventoryListener(loader), this);
 
         Bukkit.getPluginCommand("enderchestplus").setExecutor(new EnderChestPlusCommand(loader));
-        Bukkit.getPluginCommand("enderchestplus").setPermissionMessage(config.chatPrefix + ChatColor.RED + "権限がありません！");
+        Bukkit.getPluginCommand("enderchestplus").setPermissionMessage(Chat.f("{0}&c", config.chatPrefix));
 
         Bukkit.getLogger().info(getName() + " enabled.");
     }
@@ -78,7 +77,7 @@ public class EnderChestPlus extends JavaPlugin {
                     if ( success ) {
                         player.getOpenInventory().setCursor(null);
                     } else {
-                        player.sendMessage(ChatColor.RED + "インベントリにもエンチェスにもアイテムが入らなかったため、地面にドロップしました。");
+                        player.sendMessage(Chat.f("&cインベントリにもエンダーチェストにもアイテムが入らなかったため、地面にドロップしました。"));
                     }
                 }
                 player.closeInventory();

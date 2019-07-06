@@ -7,12 +7,13 @@ import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import jp.azisaba.lgw.ecplus.utils.Chat;
+import jp.azisaba.lgw.ecplus.utils.ItemHelper;
 
 public class InventoryLoader {
 
@@ -87,8 +88,7 @@ public class InventoryLoader {
                     item = getHighPane();
                 }
 
-                ItemHelper.setDisplayName(item,
-                        ChatColor.GREEN + "ページ" + ChatColor.YELLOW + (i + 1) + ChatColor.GREEN + "を開く");
+                ItemHelper.setDisplayName(item, Chat.f("&aページ&e{0}&aを開く", i + 1));
                 ItemHelper.setLore(item, getLore(inv, 5));
                 mainInv.setItem(i, item);
             } else {
@@ -101,13 +101,10 @@ public class InventoryLoader {
     }
 
     public static Inventory getBuyInventory(int page) {
-        Inventory inv = Bukkit.createInventory(null, 9 * 1,
-                EnderChestPlus.enderChestTitlePrefix + ChatColor.GREEN + " - " + ChatColor.RED + "Unlock Page "
-                        + (page + 1));
-        ItemStack confirm = ItemHelper.createItem(Material.STAINED_GLASS_PANE, 5, ChatColor.GREEN + "確定");
-        ItemStack cancel = ItemHelper.createItem(Material.STAINED_GLASS_PANE, 14, ChatColor.RED + "キャンセル");
-        ItemStack sign = ItemHelper.createItem(Material.SIGN, 0,
-                ChatColor.GREEN + "ページ" + ChatColor.YELLOW + (page + 1) + ChatColor.GREEN + "を購入しますか？");
+        Inventory inv = Bukkit.createInventory(null, 9 * 1, Chat.f("{0}&a - &cUnlock Page {1}", EnderChestPlus.enderChestTitlePrefix, page + 1));
+        ItemStack confirm = ItemHelper.createItem(Material.STAINED_GLASS_PANE, 5, Chat.f("&a確定"));
+        ItemStack cancel = ItemHelper.createItem(Material.STAINED_GLASS_PANE, 14, Chat.f("&cキャンセル"));
+        ItemStack sign = ItemHelper.createItem(Material.SIGN, 0, Chat.f("&aページ&e{0}&aを購入しますか？", page + 1));
 
         inv.setItem(0, cancel);
         inv.setItem(1, cancel);
@@ -125,26 +122,20 @@ public class InventoryLoader {
     private static ItemStack lowPane = null, midiumPane = null, highPane = null;
 
     public static ItemStack getBuyPane(int page) {
-        ItemStack buyPane = ItemHelper.createItem(Material.STAINED_GLASS_PANE, 15,
-                ChatColor.YELLOW + "クリックでページ" + ChatColor.GREEN + (page + 1) + ChatColor.YELLOW + "を購入する");
+        ItemStack buyPane = ItemHelper.createItem(Material.STAINED_GLASS_PANE, 15, Chat.f("&eクリックでページ&a{0}&eを購入する", page + 1));
 
-        List<String> lore = new ArrayList<>(Arrays.asList(ChatColor.GOLD + "解禁コスト" + ChatColor.GREEN + ":"));
+        List<String> lore = new ArrayList<>(Arrays.asList(Chat.f("&6解禁コスト&a:")));
         if ( 0 <= page && page < 18 ) {
-            lore.add(ChatColor.GRAY + "  - " + ChatColor.RED + "なし");
+            lore.add(Chat.f("&7  - &cなし"));
         } else if ( 18 <= page && page < 27 ) {
-            lore.add(ChatColor.GRAY + "  - " + ChatColor.GREEN + ChatColor.BOLD + "エメラルドブロック "
-                    + ChatColor.GRAY + "x32");
+            lore.add(Chat.f("&7  - &a&lエメラルドブロック&7x32"));
         } else if ( 27 <= page && page < 36 ) {
-            lore.add(ChatColor.GRAY + "  - " + ChatColor.GREEN + ChatColor.BOLD + "エメラルドブロック "
-                    + ChatColor.GRAY + "x64");
+            lore.add(Chat.f("&7  - &a&lエメラルドブロック&7x64"));
         } else if ( 36 <= page && page < 45 ) {
-            lore.add(ChatColor.GRAY + "  - " + ChatColor.GREEN + ChatColor.BOLD + "エメラルドブロック "
-                    + ChatColor.GRAY + "x64");
-            lore.add(ChatColor.GRAY + "  - " + ChatColor.AQUA + ChatColor.BOLD + "ダイヤモンドブロック " + ChatColor.GRAY
-                    + "x10");
+            lore.add(Chat.f("&7  - &a&lエメラルドブロック&7x64"));
+            lore.add(Chat.f("&7  - &b&lダイヤモンドブロック&7x10"));
         } else if ( 45 <= page && page < 54 ) {
-            lore.add(ChatColor.GRAY + "  - " + ChatColor.AQUA + ChatColor.BOLD + "ダイヤモンドブロック " + ChatColor.GRAY
-                    + "x32");
+            lore.add(Chat.f("&7  - &b&lダイヤモンドブロック&7x32"));
         }
 
         ItemHelper.setLore(buyPane, lore);
@@ -194,7 +185,7 @@ public class InventoryLoader {
                 continue;
             }
 
-            String msg = ChatColor.RESET + "";
+            String msg = Chat.f("&r");
             if ( item.hasItemMeta() && item.getItemMeta().hasDisplayName() ) {
                 msg += item.getItemMeta().getDisplayName();
             } else {
@@ -202,14 +193,14 @@ public class InventoryLoader {
             }
 
             if ( item.getAmount() > 1 ) {
-                msg += ChatColor.GRAY + " x" + item.getAmount();
+                msg += Chat.f("&7 x{0}", item.getAmount());
             }
 
             lore.add(msg);
         }
 
         if ( lore.size() >= lines ) {
-            lore.set(lines - 1, ChatColor.GRAY + "(その他" + (lore.size() - (lines - 1)) + "アイテム)");
+            lore.set(lines - 1, Chat.f("&7(その他{0}アイテム", lore.size() - (lines - 1)));
             lore = lore.subList(0, lines);
         }
 

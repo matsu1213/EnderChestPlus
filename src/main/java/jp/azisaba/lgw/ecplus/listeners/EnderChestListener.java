@@ -17,11 +17,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import net.md_5.bungee.api.ChatColor;
-
 import jp.azisaba.lgw.ecplus.EnderChestPlus;
 import jp.azisaba.lgw.ecplus.InventoryData;
 import jp.azisaba.lgw.ecplus.InventoryLoader;
+import jp.azisaba.lgw.ecplus.utils.Chat;
 
 public class EnderChestListener implements Listener {
 
@@ -77,14 +76,14 @@ public class EnderChestListener implements Listener {
         }
 
         if ( item.getData().getData() == (byte) 15 ) {
-            String pageNumStr = ChatColor.stripColor(item.getItemMeta().getDisplayName());
+            String pageNumStr = Chat.r(item.getItemMeta().getDisplayName());
             pageNumStr = pageNumStr.substring(8, pageNumStr.indexOf("を購入する"));
             int pageNum = Integer.parseInt(pageNumStr);
             p.openInventory(InventoryLoader.getBuyInventory(pageNum - 1));
         } else {
             int invNum = -1;
             try {
-                String title = ChatColor.stripColor(item.getItemMeta().getDisplayName());
+                String title = Chat.r(item.getItemMeta().getDisplayName());
                 title = title.substring(3, title.indexOf("を開く"));
                 invNum = Integer.parseInt(title);
             } catch ( Exception ex ) {
@@ -171,7 +170,7 @@ public class EnderChestListener implements Listener {
             return;
         }
 
-        String title = ChatColor.stripColor(inv.getTitle());
+        String title = Chat.r(inv.getTitle());
         int currentInventory = Integer.parseInt(title.substring(title.indexOf("Page") + 5, title.length())) - 1;
         int addNum = 1;
         if ( e.getClick() == ClickType.LEFT ) {
