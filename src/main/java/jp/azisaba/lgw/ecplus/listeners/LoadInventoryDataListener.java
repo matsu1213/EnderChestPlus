@@ -9,15 +9,15 @@ import jp.azisaba.lgw.ecplus.InventoryLoader;
 
 public class LoadInventoryDataListener implements Listener {
 
-	private final InventoryLoader loader;
+    private final InventoryLoader loader;
 
-	public LoadInventoryDataListener(InventoryLoader loader) {
-		this.loader = loader;
-	}
+    public LoadInventoryDataListener(InventoryLoader loader) {
+        this.loader = loader;
+    }
 
-	@EventHandler
-	public void onJoin(PlayerJoinEvent e) {
-		Player p = e.getPlayer();
-		loader.loadInventoryData(p);
-	}
+    @EventHandler
+    public void onJoin(PlayerJoinEvent e) {
+        Player p = e.getPlayer();
+        loader.loadInventoryData(p);
+    }
 }
