@@ -1,4 +1,4 @@
-# LeonGunWar plugin
+# EnderChestPlus plugin (for Azisaba)
 
 <!-- [![CircleCI](https://circleci.com/gh/AzisabaNetwork/LeonGunWar.svg?style=svg)](https://circleci.com/gh/AzisabaNetwork/LeonGunWar) -->
 [![Discord](https://discordapp.com/api/guilds/357134045328572418/widget.png)](https://discord.gg/seheC2W)
