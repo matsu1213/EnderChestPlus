@@ -22,6 +22,6 @@ public class AutoSaveTask extends BukkitRunnable {
             return;
         }
 
-        plugin.getLogger().info(Chat.f("{0}人のエンダーチェストを保存しました。"));
+        plugin.getLogger().info(Chat.f("{0}人のエンダーチェストを保存しました。", saved));
     }
 }
