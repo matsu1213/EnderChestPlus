@@ -102,7 +102,7 @@ public class InventoryData {
         }
     }
 
-    public boolean save() {
+    public boolean save(boolean asyncSave) {
         File file = new File(EnderChestPlus.getInventoryDataFile(), uuid.toString() + ".yml");
         YamlConfiguration conf = new YamlConfiguration();
 
@@ -125,11 +125,26 @@ public class InventoryData {
             }
         }
 
-        try {
-            conf.save(file);
-        } catch ( IOException e ) {
-            e.printStackTrace();
-            return false;
+        if ( asyncSave ) {
+
+            new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        conf.save(file);
+                    } catch ( IOException e ) {
+                        e.printStackTrace();
+                    }
+                }
+            }.start();
+
+        } else {
+            try {
+                conf.save(file);
+            } catch ( IOException e ) {
+                e.printStackTrace();
+                return false;
+            }
         }
         return true;
     }

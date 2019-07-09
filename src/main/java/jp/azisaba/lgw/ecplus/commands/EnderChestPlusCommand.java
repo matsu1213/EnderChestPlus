@@ -32,10 +32,21 @@ public class EnderChestPlusCommand implements CommandExecutor {
             return true;
         }
 
+        long start = System.currentTimeMillis();
         if ( args[0].equals("save") ) {
-            int saved = loader.saveAllInventoryData();
+            int saved = loader.saveAllInventoryData(false);
             plugin.getLogger().info(Chat.f("{0}人のエンダーチェストを保存しました。", saved));
             p.sendMessage(Chat.f("&a{0}人のエンダーチェストを保存しました。", saved));
+
+            Bukkit.getLogger().info((System.currentTimeMillis() - start) + "ms");
+            return true;
+        }
+        if ( args[0].equals("saveasync") ) {
+            int saved = loader.saveAllInventoryData(true);
+            plugin.getLogger().info(Chat.f("{0}人のエンダーチェストを保存しました。", saved));
+            p.sendMessage(Chat.f("&a{0}人のエンダーチェストを保存しました。", saved));
+
+            Bukkit.getLogger().info((System.currentTimeMillis() - start) + "ms");
             return true;
         }
 

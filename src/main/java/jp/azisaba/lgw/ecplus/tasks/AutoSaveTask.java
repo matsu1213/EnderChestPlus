@@ -16,12 +16,12 @@ public class AutoSaveTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        int saved = loader.saveAllInventoryData();
+        int count = loader.saveAllInventoryData(true);
 
-        if ( saved <= 0 ) {
+        if ( count <= 0 ) {
             return;
         }
 
-        plugin.getLogger().info(Chat.f("{0}人のエンダーチェストを保存しました。", saved));
+        plugin.getLogger().info(Chat.f("{0}人のエンダーチェストを保存しました。", count));
     }
 }

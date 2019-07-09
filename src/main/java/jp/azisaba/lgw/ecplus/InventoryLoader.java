@@ -47,7 +47,7 @@ public class InventoryLoader {
         return data;
     }
 
-    public int saveAllInventoryData() {
+    public int saveAllInventoryData(boolean asyncSave) {
 
         if ( invs.size() <= 0 ) {
             return 0;
@@ -56,7 +56,7 @@ public class InventoryLoader {
         int count = 0;
 
         for ( UUID uuid : new ArrayList<UUID>(invs.keySet()) ) {
-            boolean success = invs.get(uuid).save();
+            boolean success = invs.get(uuid).save(asyncSave);
 
             if ( success && Bukkit.getPlayer(uuid) == null ) {
                 invs.remove(uuid);
