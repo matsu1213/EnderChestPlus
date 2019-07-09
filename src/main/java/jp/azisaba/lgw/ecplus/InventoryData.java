@@ -54,7 +54,7 @@ public class InventoryData {
     }
 
     private void load() {
-        File file = new File(EnderChestPlus.inventoryDataFile, uuid.toString() + ".yml");
+        File file = new File(EnderChestPlus.getInventoryDataFile(), uuid.toString() + ".yml");
         if ( !file.exists() ) {
             return;
         }
@@ -103,7 +103,7 @@ public class InventoryData {
     }
 
     public boolean save() {
-        File file = new File(EnderChestPlus.inventoryDataFile, uuid.toString() + ".yml");
+        File file = new File(EnderChestPlus.getInventoryDataFile(), uuid.toString() + ".yml");
         YamlConfiguration conf = new YamlConfiguration();
 
         for ( int invNum : inventories.keySet() ) {

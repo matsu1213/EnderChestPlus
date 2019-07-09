@@ -15,6 +15,7 @@ import jp.azisaba.lgw.ecplus.listeners.BuyInventoryListener;
 import jp.azisaba.lgw.ecplus.listeners.DroppedItemListener;
 import jp.azisaba.lgw.ecplus.listeners.EnderChestListener;
 import jp.azisaba.lgw.ecplus.listeners.LoadInventoryDataListener;
+import jp.azisaba.lgw.ecplus.tasks.AutoSaveTask;
 import jp.azisaba.lgw.ecplus.utils.Chat;
 
 public class EnderChestPlus extends JavaPlugin {
@@ -22,7 +23,9 @@ public class EnderChestPlus extends JavaPlugin {
     public static final String enderChestTitlePrefix = Chat.f("&cEnderChest&b+");
     public static final String mainEnderChestTitle = Chat.f("{0} &a- &eMain", enderChestTitlePrefix);
     private static PluginConfig config;
-    public static File inventoryDataFile;
+    @Getter
+    private static File inventoryDataFile;
+    private AutoSaveTask saveTask;
 
     @Getter
     private DropItemContainer dropItemContainer = null;
@@ -36,6 +39,8 @@ public class EnderChestPlus extends JavaPlugin {
         loader = new InventoryLoader(this);
         dropItemContainer = new DropItemContainer(this);
         dropItemContainer.load();
+        saveTask = new AutoSaveTask(loader);
+        saveTask.runTaskTimer(this, 20 * 60 * 5, 20 * 60 * 5);
 
         EnderChestPlus.config = new PluginConfig(this);
         EnderChestPlus.config.loadConfig();
@@ -61,6 +66,8 @@ public class EnderChestPlus extends JavaPlugin {
 
     @Override
     public void onDisable() {
+
+        saveTask.cancel();
 
         dropItemContainer.save();
 

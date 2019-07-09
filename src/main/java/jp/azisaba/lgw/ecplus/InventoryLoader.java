@@ -48,9 +48,18 @@ public class InventoryLoader {
     }
 
     public void saveAllInventoryData() {
-        invs.values().forEach(data -> {
-            data.save();
-        });
+
+        if ( invs.size() <= 0 ) {
+            return;
+        }
+
+        for ( UUID uuid : new ArrayList<UUID>(invs.keySet()) ) {
+            boolean success = invs.get(uuid).save();
+
+            if ( success && Bukkit.getPlayer(uuid) == null ) {
+                invs.remove(uuid);
+            }
+        }
     }
 
     public void setLookingAt(Player p, UUID uuid) {
