@@ -8,16 +8,17 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import lombok.RequiredArgsConstructor;
+
+import jp.azisaba.lgw.ecplus.EnderChestPlus;
 import jp.azisaba.lgw.ecplus.InventoryLoader;
 import jp.azisaba.lgw.ecplus.utils.Chat;
 
+@RequiredArgsConstructor
 public class EnderChestPlusCommand implements CommandExecutor {
 
+    private final EnderChestPlus plugin;
     private final InventoryLoader loader;
-
-    public EnderChestPlusCommand(InventoryLoader loader) {
-        this.loader = loader;
-    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -28,6 +29,13 @@ public class EnderChestPlusCommand implements CommandExecutor {
 
         if ( args.length <= 0 ) {
             p.sendMessage(Chat.f("&cUsage: {0}", cmd.getUsage().replace("{LABEL}", label)));
+            return true;
+        }
+
+        if ( args[0].equals("save") ) {
+            int saved = loader.saveAllInventoryData();
+            plugin.getLogger().info(Chat.f("{0}人のエンダーチェストを保存しました。", saved));
+            p.sendMessage(Chat.f("&a{0}人のエンダーチェストを保存しました。", saved));
             return true;
         }
 
