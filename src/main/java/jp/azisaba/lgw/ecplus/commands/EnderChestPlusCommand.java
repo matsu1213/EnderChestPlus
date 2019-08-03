@@ -1,8 +1,8 @@
 package jp.azisaba.lgw.ecplus.commands;
 
+import java.io.IOException;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -13,6 +13,9 @@ import lombok.RequiredArgsConstructor;
 import jp.azisaba.lgw.ecplus.EnderChestPlus;
 import jp.azisaba.lgw.ecplus.InventoryLoader;
 import jp.azisaba.lgw.ecplus.utils.Chat;
+import jp.azisaba.lgw.ecplus.utils.UUIDUtils;
+import me.kbrewster.exceptions.APIException;
+import me.kbrewster.exceptions.InvalidPlayerException;
 
 @RequiredArgsConstructor
 public class EnderChestPlusCommand implements CommandExecutor {
@@ -46,21 +49,23 @@ public class EnderChestPlusCommand implements CommandExecutor {
             return true;
         }
 
-        Player target = Bukkit.getPlayerExact(args[0]);
         UUID uuid = null;
         try {
-            uuid = UUID.fromString(args[0]);
-        } catch ( Exception e ) {
-            // pass
-        }
-
-        if ( target == null && uuid == null ) {
-            p.sendMessage(Chat.f("&c現在オンラインのプレイヤー名かUUIDを入力してください。"));
+            uuid = UUIDUtils.getUUID(args[0]);
+        } catch ( APIException e ) {
+            p.sendMessage(Chat.f("&cUUIDの取得に失敗しました。(MojangAPIのレートリミット)"));
+            return true;
+        } catch ( InvalidPlayerException e ) {
+            p.sendMessage(Chat.f("&cUUIDの取得に失敗しました。(そのMCIDのプレイヤーは存在しません)"));
+            return true;
+        } catch ( IOException e ) {
+            p.sendMessage(Chat.f("&cUUIDの取得に失敗しました。({0})", e.getClass().getName()));
             return true;
         }
 
-        if ( target != null ) {
-            uuid = target.getUniqueId();
+        if ( uuid == null ) {
+            p.sendMessage(Chat.f("&cUUIDの取得に失敗しました。(不明)"));
+            return true;
         }
 
         loader.setLookingAt(p, uuid);
