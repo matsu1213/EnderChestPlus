@@ -55,7 +55,7 @@ public class InventoryLoader {
 
         int count = 0;
 
-        for ( UUID uuid : new ArrayList<UUID>(invs.keySet()) ) {
+        for ( UUID uuid : new ArrayList<>(invs.keySet()) ) {
             boolean success = invs.get(uuid).save(asyncSave);
 
             if ( success && Bukkit.getPlayer(uuid) == null ) {

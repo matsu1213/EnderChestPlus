@@ -21,7 +21,7 @@ import me.kbrewster.mojangapi.MojangAPI;
 public class UUIDUtils {
 
     // 調べたUUIDを保存しておくHashMap。何度も問い合わせるとエラーになるため
-    private static HashMap<String, UUID> uuidCache = new HashMap<String, UUID>();
+    private static HashMap<String, UUID> uuidCache = new HashMap<>();
 
     /**
      *

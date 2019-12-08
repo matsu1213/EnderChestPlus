@@ -245,8 +245,9 @@ public class EnderChestListener implements Listener {
             msg.newline();
             msg.then(Chat.f("&eアイテム&a: &r{0}", item.getType().toString())).newline();
 
-            if ( item.hasItemMeta() && item.getItemMeta().hasDisplayName() )
+            if ( item.hasItemMeta() && item.getItemMeta().hasDisplayName() ) {
                 msg.then(Chat.f("&e名前&a: &r{0}", item.getItemMeta().getDisplayName())).newline();
+            }
 
             msg.then(Chat.f("&e個数&a: &r{0}個", item.getAmount())).newline();
             msg.newline();
@@ -303,11 +304,11 @@ public class EnderChestListener implements Listener {
             slotItem.setAmount(1);
 
             if ( slotItem.equals(testItem) ) {
-                itemAmount -= (slotItem.getMaxStackSize() - slotItemAmount);
+                itemAmount -= slotItem.getMaxStackSize() - slotItemAmount;
             }
         }
 
-        if (itemAmount <= 0) {
+        if ( itemAmount <= 0 ) {
             return true;
         }
 

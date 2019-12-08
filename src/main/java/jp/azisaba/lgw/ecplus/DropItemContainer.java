@@ -22,8 +22,8 @@ public class DropItemContainer {
 
     private final EnderChestPlus plugin;
 
-    private HashMap<String, DropItem> items = new HashMap<>();
-    private HashMap<String, Inventory> inventories = new HashMap<>();
+    private final HashMap<String, DropItem> items = new HashMap<>();
+    private final HashMap<String, Inventory> inventories = new HashMap<>();
 
     public String addItem(Player p, ItemStack item) {
 
@@ -64,10 +64,12 @@ public class DropItemContainer {
     }
 
     public void deleteItemData(String id) {
-        if ( items.containsKey(id) )
+        if ( items.containsKey(id) ) {
             items.remove(id);
-        if ( inventories.containsKey(id) )
+        }
+        if ( inventories.containsKey(id) ) {
             inventories.remove(id);
+        }
     }
 
     public void load() {
