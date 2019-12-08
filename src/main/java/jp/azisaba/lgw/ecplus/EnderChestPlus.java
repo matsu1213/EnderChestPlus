@@ -1,9 +1,12 @@
 package jp.azisaba.lgw.ecplus;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -52,9 +55,12 @@ public class EnderChestPlus extends JavaPlugin {
         EnderChestPlus.config.loadConfig();
 
         if ( Bukkit.getOnlinePlayers().size() > 0 ) {
-            Bukkit.getOnlinePlayers().forEach(p -> {
-                loader.loadInventoryData(p);
-            });
+            final List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
+            new Thread() {
+                public void run() {
+                    players.forEach(p -> loader.loadInventoryData(p));
+                }
+            }.start();
         }
 
         Bukkit.getPluginManager().registerEvents(new EnderChestListener(this, loader, dropItemContainer), this);
