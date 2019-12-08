@@ -55,7 +55,15 @@ public class EnderChestListener implements Listener {
             loader.setLookingAt(p, null);
         }
 
-        Inventory inv = InventoryLoader.getMainInventory(loader.getInventoryData(p));
+        InventoryData data = loader.getInventoryData(p);
+
+        // nullの場合は読み込み待ち
+        if ( data == null ) {
+            p.sendMessage(Chat.f("&c現在プレイヤーデータのロード中です。しばらくお待ちください..."));
+            return;
+        }
+
+        Inventory inv = InventoryLoader.getMainInventory(data);
         p.openInventory(inv);
     }
 

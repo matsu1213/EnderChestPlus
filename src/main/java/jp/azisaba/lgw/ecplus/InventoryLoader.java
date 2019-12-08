@@ -17,34 +17,39 @@ import jp.azisaba.lgw.ecplus.utils.ItemHelper;
 
 public class InventoryLoader {
 
+    private final EnderChestPlus plugin;
+
     private final HashMap<UUID, InventoryData> invs = new HashMap<>();
     private final HashMap<Player, UUID> adminLookingAt = new HashMap<>();
 
     public InventoryLoader(EnderChestPlus plugin) {
+        this.plugin = plugin;
     }
 
     public void loadInventoryData(Player p) {
-        if ( !invs.containsKey(p.getUniqueId()) ) {
-            InventoryData data = new InventoryData(p);
-            invs.put(p.getUniqueId(), data);
+        loadInventoryData(p.getUniqueId());
+    }
+
+    public void loadInventoryData(UUID uuid) {
+        if ( !invs.containsKey(uuid) ) {
+            InventoryData data = new InventoryData(uuid);
+
+            // 非同期で実行されていた場合に ConcurrentModificationException の発生を防ぐ
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                invs.put(uuid, data);
+            }, 0L);
         }
     }
 
     public InventoryData getInventoryData(Player p) {
-        if ( invs.containsKey(p.getUniqueId()) ) {
-            return invs.get(p.getUniqueId());
-        }
-        return null;
+        return getInventoryData(p.getUniqueId());
     }
 
     public InventoryData getInventoryData(UUID uuid) {
         if ( invs.containsKey(uuid) ) {
             return invs.get(uuid);
         }
-
-        InventoryData data = new InventoryData(uuid);
-        invs.put(uuid, data);
-        return data;
+        return null;
     }
 
     public int saveAllInventoryData(boolean asyncSave) {

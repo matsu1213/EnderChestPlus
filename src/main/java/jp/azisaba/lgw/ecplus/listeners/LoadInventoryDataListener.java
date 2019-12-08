@@ -18,6 +18,12 @@ public class LoadInventoryDataListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
-        loader.loadInventoryData(p);
+
+        // 非同期で読み込みを行う
+        new Thread() {
+            public void run() {
+                loader.loadInventoryData(p);
+            }
+        }.start();
     }
 }

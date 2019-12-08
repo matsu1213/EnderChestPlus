@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 
 import jp.azisaba.lgw.ecplus.EnderChestPlus;
 import jp.azisaba.lgw.ecplus.InventoryLoader;
+import jp.azisaba.lgw.ecplus.tasks.WaitLoadingTask;
 import jp.azisaba.lgw.ecplus.utils.Chat;
 import jp.azisaba.lgw.ecplus.utils.UUIDUtils;
 import me.kbrewster.exceptions.APIException;
@@ -22,6 +23,7 @@ public class EnderChestPlusCommand implements CommandExecutor {
 
     private final EnderChestPlus plugin;
     private final InventoryLoader loader;
+    private final WaitLoadingTask loadingTask;
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -49,27 +51,33 @@ public class EnderChestPlusCommand implements CommandExecutor {
             return true;
         }
 
-        UUID uuid = null;
-        try {
-            uuid = UUIDUtils.getUUID(args[0]);
-        } catch ( APIException e ) {
-            p.sendMessage(Chat.f("&cUUIDの取得に失敗しました。(MojangAPIのレートリミット)"));
-            return true;
-        } catch ( InvalidPlayerException e ) {
-            p.sendMessage(Chat.f("&cUUIDの取得に失敗しました。(そのMCIDのプレイヤーは存在しません)"));
-            return true;
-        } catch ( IOException e ) {
-            p.sendMessage(Chat.f("&cUUIDの取得に失敗しました。({0})", e.getClass().getName()));
-            return true;
-        }
+        p.sendMessage(Chat.f("&a非同期でデータをロード中です。完了し次第開きます"));
 
-        if ( uuid == null ) {
-            p.sendMessage(Chat.f("&cUUIDの取得に失敗しました。(不明)"));
-            return true;
-        }
+        new Thread() {
+            public void run() {
+                UUID uuid = null;
+                try {
+                    uuid = UUIDUtils.getUUID(args[0]);
+                } catch ( APIException e ) {
+                    p.sendMessage(Chat.f("&cUUIDの取得に失敗しました。(MojangAPIのレートリミット)"));
+                    return;
+                } catch ( InvalidPlayerException e ) {
+                    p.sendMessage(Chat.f("&cUUIDの取得に失敗しました。(そのMCIDのプレイヤーは存在しません)"));
+                    return;
+                } catch ( IOException e ) {
+                    p.sendMessage(Chat.f("&cUUIDの取得に失敗しました。({0})", e.getClass().getName()));
+                    return;
+                }
 
-        loader.setLookingAt(p, uuid);
-        p.openInventory(InventoryLoader.getMainInventory(loader.getInventoryData(uuid)));
+                if ( uuid == null ) {
+                    p.sendMessage(Chat.f("&cUUIDの取得に失敗しました。(不明)"));
+                    return;
+                }
+
+                loadingTask.addQueue(p, uuid);
+                loader.loadInventoryData(uuid);
+            }
+        }.start();
         return true;
     }
 }
