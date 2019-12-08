@@ -20,8 +20,7 @@ public class InventoryData {
     private final HashMap<Integer, Inventory> inventories = new HashMap<>();
 
     public InventoryData(Player p) {
-        uuid = p.getUniqueId();
-        load();
+        new InventoryData(p.getUniqueId());
     }
 
     public InventoryData(UUID uuid) {

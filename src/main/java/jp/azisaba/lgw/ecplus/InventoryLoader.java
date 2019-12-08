@@ -12,19 +12,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import lombok.RequiredArgsConstructor;
+
 import jp.azisaba.lgw.ecplus.utils.Chat;
 import jp.azisaba.lgw.ecplus.utils.ItemHelper;
 
+@RequiredArgsConstructor
 public class InventoryLoader {
 
     private final EnderChestPlus plugin;
 
     private final HashMap<UUID, InventoryData> invs = new HashMap<>();
     private final HashMap<Player, UUID> adminLookingAt = new HashMap<>();
-
-    public InventoryLoader(EnderChestPlus plugin) {
-        this.plugin = plugin;
-    }
 
     public void loadInventoryData(Player p) {
         loadInventoryData(p.getUniqueId());

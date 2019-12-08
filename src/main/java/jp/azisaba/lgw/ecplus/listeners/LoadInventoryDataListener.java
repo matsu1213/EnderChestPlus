@@ -5,15 +5,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import lombok.RequiredArgsConstructor;
+
 import jp.azisaba.lgw.ecplus.InventoryLoader;
 
+@RequiredArgsConstructor
 public class LoadInventoryDataListener implements Listener {
 
     private final InventoryLoader loader;
-
-    public LoadInventoryDataListener(InventoryLoader loader) {
-        this.loader = loader;
-    }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {

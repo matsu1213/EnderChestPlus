@@ -11,18 +11,17 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import lombok.RequiredArgsConstructor;
+
 import jp.azisaba.lgw.ecplus.EnderChestPlus;
 import jp.azisaba.lgw.ecplus.InventoryData;
 import jp.azisaba.lgw.ecplus.InventoryLoader;
 import jp.azisaba.lgw.ecplus.utils.Chat;
 
+@RequiredArgsConstructor
 public class BuyInventoryListener implements Listener {
 
     private final InventoryLoader loader;
-
-    public BuyInventoryListener(InventoryLoader loader) {
-        this.loader = loader;
-    }
 
     @EventHandler
     public void onClickedConfirmGUI(InventoryClickEvent e) {
