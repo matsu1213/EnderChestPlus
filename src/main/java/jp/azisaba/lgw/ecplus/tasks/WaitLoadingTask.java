@@ -51,8 +51,9 @@ public class WaitLoadingTask extends BukkitRunnable {
             }
 
             // プレイヤーと開くエンチェスのUUIDが違う場合はlookingを指定
-            if ( uuid != waiting.get(uuid) )
+            if ( uuid != waiting.get(uuid) ) {
                 loader.setLookingAt(waitingPlayer, waiting.get(uuid));
+            }
 
             // インベントリを開く
             waitingPlayer.openInventory(InventoryLoader.getMainInventory(data));

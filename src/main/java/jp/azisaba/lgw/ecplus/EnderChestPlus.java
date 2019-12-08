@@ -57,6 +57,7 @@ public class EnderChestPlus extends JavaPlugin {
         if ( Bukkit.getOnlinePlayers().size() > 0 ) {
             final List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
             new Thread() {
+                @Override
                 public void run() {
                     players.forEach(p -> loader.loadInventoryData(p));
                 }

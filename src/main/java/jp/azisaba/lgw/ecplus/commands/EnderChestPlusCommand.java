@@ -54,6 +54,7 @@ public class EnderChestPlusCommand implements CommandExecutor {
         p.sendMessage(Chat.f("&a非同期でデータをロード中です。完了し次第開きます"));
 
         new Thread() {
+            @Override
             public void run() {
                 UUID uuid = null;
                 try {

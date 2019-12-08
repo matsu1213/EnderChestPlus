@@ -20,6 +20,7 @@ public class LoadInventoryDataListener implements Listener {
 
         // 非同期で読み込みを行う
         new Thread() {
+            @Override
             public void run() {
                 loader.loadInventoryData(p);
             }
