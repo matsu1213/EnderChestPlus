@@ -49,7 +49,7 @@ public class EnderChestPlus extends JavaPlugin {
         dropItemContainer = new DropItemContainer(this);
         dropItemContainer.load();
         saveTask = new AutoSaveTask(this, loader);
-        saveTask.runTaskTimer(this, 20 * 60 * 5, 20 * 60 * 5);
+        saveTask.runTaskTimerAsynchronously(this, 20 * 60 * 5, 20 * 60 * 5);
 
         EnderChestPlus.config = new PluginConfig(this);
         EnderChestPlus.config.loadConfig();
