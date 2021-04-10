@@ -1,5 +1,6 @@
 package jp.azisaba.lgw.ecplus.listeners;
 
+import jp.azisaba.lgw.ecplus.EnderChestPlus;
 import jp.azisaba.lgw.ecplus.InventoryLoader;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
@@ -17,11 +18,8 @@ public class LoadInventoryDataListener implements Listener {
         Player p = e.getPlayer();
 
         // 非同期で読み込みを行う
-        new Thread() {
-            @Override
-            public void run() {
-                loader.loadInventoryData(p);
-            }
-        }.start();
+        EnderChestPlus.newChain()
+                .async(() -> loader.loadInventoryData(p))
+                .execute();
     }
 }

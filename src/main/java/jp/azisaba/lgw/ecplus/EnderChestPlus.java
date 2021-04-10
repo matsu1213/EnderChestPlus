@@ -10,18 +10,14 @@ import jp.azisaba.lgw.ecplus.listeners.DroppedItemListener;
 import jp.azisaba.lgw.ecplus.listeners.EnderChestListener;
 import jp.azisaba.lgw.ecplus.listeners.LoadInventoryDataListener;
 import jp.azisaba.lgw.ecplus.tasks.AutoSaveTask;
-import jp.azisaba.lgw.ecplus.tasks.WaitLoadingTask;
 import jp.azisaba.lgw.ecplus.utils.Chat;
 import lombok.Getter;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class EnderChestPlus extends JavaPlugin {
 
@@ -37,8 +33,6 @@ public class EnderChestPlus extends JavaPlugin {
     private DropItemContainer dropItemContainer = null;
     @Getter
     private InventoryLoader loader = null;
-    @Getter
-    private WaitLoadingTask loadingTask;
 
     public static PluginConfig getPluginConfig() {
         return config;
@@ -58,33 +52,25 @@ public class EnderChestPlus extends JavaPlugin {
 
         inventoryDataFile = new File(getDataFolder(), "Inventories");
         loader = new InventoryLoader(this);
-        loadingTask = new WaitLoadingTask(loader);
-        loadingTask.runTaskTimer(this, 20, 20);
 
         dropItemContainer = new DropItemContainer(this);
         dropItemContainer.load();
         saveTask = new AutoSaveTask(this, loader);
-        saveTask.runTaskTimerAsynchronously(this, 20 * 60 * 5, 20 * 60 * 5);
+        saveTask.runTaskTimer(this, 20 * 60 * 5, 20 * 60 * 5);
 
         EnderChestPlus.config = new PluginConfig(this);
         EnderChestPlus.config.loadConfig();
 
-        if (Bukkit.getOnlinePlayers().size() > 0) {
-            final List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
-            new Thread() {
-                @Override
-                public void run() {
-                    players.forEach(p -> loader.loadInventoryData(p));
-                }
-            }.start();
-        }
+        Bukkit.getOnlinePlayers().forEach(p -> newSharedChain("loadInventory")
+                .async(() -> loader.loadInventoryData(p))
+                .execute());
 
         Bukkit.getPluginManager().registerEvents(new EnderChestListener(this, loader, dropItemContainer), this);
         Bukkit.getPluginManager().registerEvents(new LoadInventoryDataListener(loader), this);
         Bukkit.getPluginManager().registerEvents(new BuyInventoryListener(loader), this);
         Bukkit.getPluginManager().registerEvents(new DroppedItemListener(dropItemContainer), this);
 
-        Bukkit.getPluginCommand("enderchestplus").setExecutor(new EnderChestPlusCommand(this, loader, loadingTask));
+        Bukkit.getPluginCommand("enderchestplus").setExecutor(new EnderChestPlusCommand(this, loader));
         Bukkit.getPluginCommand("enderchestplus").setPermissionMessage(Chat.f("{0}&c権限がありません！", config.chatPrefix));
         Bukkit.getPluginCommand("receivedropped").setExecutor(new ReceiveDroppedCommand(dropItemContainer));
         Bukkit.getPluginCommand("receivedropped").setPermissionMessage(Chat.f("{0}&c権限がありません！", config.chatPrefix));

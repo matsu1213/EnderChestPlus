@@ -14,12 +14,9 @@ public class AutoSaveTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        int count = loader.saveAllInventoryData(true);
-
-        if (count <= 0) {
-            return;
-        }
-
-        plugin.getLogger().info(Chat.f("{0}人のエンダーチェストを保存しました。", count));
+        EnderChestPlus.newChain()
+                .asyncFirst(() -> loader.saveAllInventoryData(true))
+                .syncLast(input -> plugin.getLogger().info(Chat.f("{0}人のエンダーチェストを保存しました。", input)))
+                .execute();
     }
 }

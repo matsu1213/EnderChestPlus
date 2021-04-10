@@ -5,7 +5,6 @@ author: siloneco
 description: ${project.description}
 commands:
   enderchestplus:
-    usage: /{LABEL} [Player/UUID]
     permission: enderchestplus.command.enderchestplus
     aliases: [ ecp ]
   receivedropped:
