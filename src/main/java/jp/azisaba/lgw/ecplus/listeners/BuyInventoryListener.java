@@ -97,31 +97,11 @@ public class BuyInventoryListener implements Listener {
     }
 
     private boolean costPlayer(Player p, int page) {
-        int line = -1;
-        if (0 <= page && page < 9) {
-            line = 1;
-        } else if (9 <= page && page < 18) {
-            line = 2;
-        } else if (18 <= page && page < 27) {
-            line = 3;
-        } else if (27 <= page && page < 36) {
-            line = 4;
-        } else if (36 <= page && page < 45) {
-            line = 5;
-        } else if (45 <= page && page < 54) {
-            line = 6;
-        } else if (54 <= page && page < 108) {
-            line = 7;
-        }
-
+        int line = page / 9;
         return costPlayerByLine(p, line);
     }
 
     private boolean costPlayerByLine(Player p, int line) {
-        if (!(0 < line && line <= 7)) {
-            return false;
-        }
-
         if (line <= 2) {
             return true;
         }
@@ -138,7 +118,10 @@ public class BuyInventoryListener implements Listener {
             diamondBlockNorma = 10;
         } else if (line == 6) {
             diamondBlockNorma = 32;
+        } else if (line <= 9) {
+            diamondBlockNorma = 64;
         } else {
+            emeraldBlockNorma = 64;
             diamondBlockNorma = 64;
         }
 

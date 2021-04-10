@@ -85,7 +85,10 @@ public class InventoryLoader {
             lore.add(Chat.f("&7  - &b&lダイヤモンドブロック&7x10"));
         } else if (45 <= page && page < 54) {
             lore.add(Chat.f("&7  - &b&lダイヤモンドブロック&7x32"));
-        } else if (54 <= page && page < EnderChestPlus.MAX_MAIN_INVENTORY_PAGES * 54) {
+        } else if (54 <= page && page < 81) {
+            lore.add(Chat.f("&7  - &b&lダイヤモンドブロック&7x64"));
+        } else if (81 <= page && page < EnderChestPlus.MAX_MAIN_INVENTORY_PAGES * 54) {
+            lore.add(Chat.f("&7  - &a&lエメラルドブロック&7x64"));
             lore.add(Chat.f("&7  - &b&lダイヤモンドブロック&7x64"));
         }
 
