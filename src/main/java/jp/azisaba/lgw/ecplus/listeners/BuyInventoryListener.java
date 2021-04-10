@@ -97,7 +97,7 @@ public class BuyInventoryListener implements Listener {
     }
 
     private boolean costPlayer(Player p, int page) {
-        int line = page / 9;
+        int line = page / 9 + 1;
         return costPlayerByLine(p, line);
     }
 
