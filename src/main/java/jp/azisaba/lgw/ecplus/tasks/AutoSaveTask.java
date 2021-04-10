@@ -1,12 +1,10 @@
 package jp.azisaba.lgw.ecplus.tasks;
 
-import org.bukkit.scheduler.BukkitRunnable;
-
-import lombok.RequiredArgsConstructor;
-
 import jp.azisaba.lgw.ecplus.EnderChestPlus;
 import jp.azisaba.lgw.ecplus.InventoryLoader;
 import jp.azisaba.lgw.ecplus.utils.Chat;
+import lombok.RequiredArgsConstructor;
+import org.bukkit.scheduler.BukkitRunnable;
 
 @RequiredArgsConstructor
 public class AutoSaveTask extends BukkitRunnable {
@@ -18,7 +16,7 @@ public class AutoSaveTask extends BukkitRunnable {
     public void run() {
         int count = loader.saveAllInventoryData(true);
 
-        if ( count <= 0 ) {
+        if (count <= 0) {
             return;
         }
 

@@ -1,107 +1,36 @@
 package jp.azisaba.lgw.ecplus;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
-
+import jp.azisaba.lgw.ecplus.utils.Chat;
+import jp.azisaba.lgw.ecplus.utils.ItemHelper;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import lombok.RequiredArgsConstructor;
-
-import jp.azisaba.lgw.ecplus.utils.Chat;
-import jp.azisaba.lgw.ecplus.utils.ItemHelper;
+import java.util.*;
 
 @RequiredArgsConstructor
 public class InventoryLoader {
 
+    private static ItemStack lowPane = null, midiumPane = null, highPane = null;
     private final EnderChestPlus plugin;
-
     private final HashMap<UUID, InventoryData> invs = new HashMap<>();
     private final HashMap<Player, UUID> adminLookingAt = new HashMap<>();
-
-    public void loadInventoryData(Player p) {
-        loadInventoryData(p.getUniqueId());
-    }
-
-    public void loadInventoryData(UUID uuid) {
-        if ( !invs.containsKey(uuid) ) {
-            InventoryData data = new InventoryData(uuid);
-
-            // 非同期で実行されていた場合に ConcurrentModificationException の発生を防ぐ
-            Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                invs.put(uuid, data);
-            }, 0L);
-        }
-    }
-
-    public InventoryData getInventoryData(Player p) {
-        return getInventoryData(p.getUniqueId());
-    }
-
-    public InventoryData getInventoryData(UUID uuid) {
-        if ( invs.containsKey(uuid) ) {
-            return invs.get(uuid);
-        }
-        return null;
-    }
-
-    public int saveAllInventoryData(boolean asyncSave) {
-
-        if ( invs.size() <= 0 ) {
-            return 0;
-        }
-
-        int count = 0;
-
-        for ( UUID uuid : new ArrayList<>(invs.keySet()) ) {
-            boolean success = invs.get(uuid).save(asyncSave);
-
-            if ( success && Bukkit.getPlayer(uuid) == null ) {
-                invs.remove(uuid);
-            }
-
-            count++;
-        }
-
-        return count;
-    }
-
-    public void setLookingAt(Player p, UUID uuid) {
-        if ( uuid == null ) {
-            if ( adminLookingAt.containsKey(p) ) {
-                adminLookingAt.remove(p);
-            }
-            return;
-        }
-
-        adminLookingAt.put(p, uuid);
-    }
-
-    public UUID getLookingAt(Player p) {
-        if ( adminLookingAt.containsKey(p) ) {
-            return adminLookingAt.get(p);
-        }
-        return null;
-    }
 
     public static Inventory getMainInventory(InventoryData data) {
         Inventory mainInv = Bukkit.createInventory(null, 9 * 6, EnderChestPlus.mainEnderChestTitle);
 
-        for ( int i = 0; i < mainInv.getSize(); i++ ) {
+        for (int i = 0; i < mainInv.getSize(); i++) {
             Inventory inv = data.getInventory(i);
-            if ( inv != null ) {
+            if (inv != null) {
                 double percentage = getPercentage(inv);
                 ItemStack item = null;
 
-                if ( percentage < 0.333 ) {
+                if (percentage < 0.333) {
                     item = getLowPane();
-                } else if ( percentage < 0.666 ) {
+                } else if (percentage < 0.666) {
                     item = getMidiumPane();
                 } else {
                     item = getHighPane();
@@ -138,22 +67,20 @@ public class InventoryLoader {
         return inv;
     }
 
-    private static ItemStack lowPane = null, midiumPane = null, highPane = null;
-
     public static ItemStack getBuyPane(int page) {
         ItemStack buyPane = ItemHelper.createItem(Material.STAINED_GLASS_PANE, 15, Chat.f("&eクリックでページ&a{0}&eを購入する", page + 1));
 
         List<String> lore = new ArrayList<>(Arrays.asList(Chat.f("&6解禁コスト&a:")));
-        if ( 0 <= page && page < 18 ) {
+        if (0 <= page && page < 18) {
             lore.add(Chat.f("&7  - &cなし"));
-        } else if ( 18 <= page && page < 27 ) {
+        } else if (18 <= page && page < 27) {
             lore.add(Chat.f("&7  - &a&lエメラルドブロック&7x32"));
-        } else if ( 27 <= page && page < 36 ) {
+        } else if (27 <= page && page < 36) {
             lore.add(Chat.f("&7  - &a&lエメラルドブロック&7x64"));
-        } else if ( 36 <= page && page < 45 ) {
+        } else if (36 <= page && page < 45) {
             lore.add(Chat.f("&7  - &a&lエメラルドブロック&7x64"));
             lore.add(Chat.f("&7  - &b&lダイヤモンドブロック&7x10"));
-        } else if ( 45 <= page && page < 54 ) {
+        } else if (45 <= page && page < 54) {
             lore.add(Chat.f("&7  - &b&lダイヤモンドブロック&7x32"));
         }
 
@@ -163,21 +90,21 @@ public class InventoryLoader {
     }
 
     public static ItemStack getLowPane() {
-        if ( lowPane == null ) {
+        if (lowPane == null) {
             lowPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (byte) 5);
         }
         return lowPane;
     }
 
     public static ItemStack getMidiumPane() {
-        if ( midiumPane == null ) {
+        if (midiumPane == null) {
             midiumPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (byte) 4);
         }
         return midiumPane;
     }
 
     public static ItemStack getHighPane() {
-        if ( highPane == null ) {
+        if (highPane == null) {
             highPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (byte) 14);
         }
         return highPane;
@@ -186,8 +113,8 @@ public class InventoryLoader {
     private static double getPercentage(Inventory inv) {
         int total = inv.getSize();
         int empty = 0;
-        for ( int i = 0; i < inv.getSize(); i++ ) {
-            if ( inv.getItem(i) == null || inv.getItem(i).getType() == Material.AIR ) {
+        for (int i = 0; i < inv.getSize(); i++) {
+            if (inv.getItem(i) == null || inv.getItem(i).getType() == Material.AIR) {
                 empty++;
             }
         }
@@ -198,31 +125,96 @@ public class InventoryLoader {
     private static List<String> getLore(Inventory inv, int lines) {
         List<String> lore = new ArrayList<>();
 
-        for ( int i = 0; i < inv.getSize(); i++ ) {
+        for (int i = 0; i < inv.getSize(); i++) {
             ItemStack item = inv.getItem(i);
-            if ( item == null || item.getType() == Material.AIR ) {
+            if (item == null || item.getType() == Material.AIR) {
                 continue;
             }
 
             String msg = Chat.f("&r");
-            if ( item.hasItemMeta() && item.getItemMeta().hasDisplayName() ) {
+            if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
                 msg += item.getItemMeta().getDisplayName();
             } else {
                 msg += item.getType().toString();
             }
 
-            if ( item.getAmount() > 1 ) {
+            if (item.getAmount() > 1) {
                 msg += Chat.f("&7 x{0}", item.getAmount());
             }
 
             lore.add(msg);
         }
 
-        if ( lore.size() >= lines ) {
+        if (lore.size() >= lines) {
             lore.set(lines - 1, Chat.f("&7(その他{0}アイテム", lore.size() - (lines - 1)));
             lore = lore.subList(0, lines);
         }
 
         return lore;
+    }
+
+    public void loadInventoryData(Player p) {
+        loadInventoryData(p.getUniqueId());
+    }
+
+    public void loadInventoryData(UUID uuid) {
+        if (!invs.containsKey(uuid)) {
+            InventoryData data = new InventoryData(uuid);
+
+            // 非同期で実行されていた場合に ConcurrentModificationException の発生を防ぐ
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                invs.put(uuid, data);
+            }, 0L);
+        }
+    }
+
+    public InventoryData getInventoryData(Player p) {
+        return getInventoryData(p.getUniqueId());
+    }
+
+    public InventoryData getInventoryData(UUID uuid) {
+        if (invs.containsKey(uuid)) {
+            return invs.get(uuid);
+        }
+        return null;
+    }
+
+    public int saveAllInventoryData(boolean asyncSave) {
+
+        if (invs.size() <= 0) {
+            return 0;
+        }
+
+        int count = 0;
+
+        for (UUID uuid : new ArrayList<>(invs.keySet())) {
+            boolean success = invs.get(uuid).save(asyncSave);
+
+            if (success && Bukkit.getPlayer(uuid) == null) {
+                invs.remove(uuid);
+            }
+
+            count++;
+        }
+
+        return count;
+    }
+
+    public void setLookingAt(Player p, UUID uuid) {
+        if (uuid == null) {
+            if (adminLookingAt.containsKey(p)) {
+                adminLookingAt.remove(p);
+            }
+            return;
+        }
+
+        adminLookingAt.put(p, uuid);
+    }
+
+    public UUID getLookingAt(Player p) {
+        if (adminLookingAt.containsKey(p)) {
+            return adminLookingAt.get(p);
+        }
+        return null;
     }
 }

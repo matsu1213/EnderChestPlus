@@ -1,8 +1,8 @@
 package jp.azisaba.lgw.ecplus.utils;
 
-import java.text.MessageFormat;
-
 import org.bukkit.ChatColor;
+
+import java.text.MessageFormat;
 
 public class Chat {
 

@@ -1,17 +1,5 @@
 package jp.azisaba.lgw.ecplus;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
-
-import lombok.Getter;
-
 import jp.azisaba.lgw.ecplus.commands.EnderChestPlusCommand;
 import jp.azisaba.lgw.ecplus.commands.ReceiveDroppedCommand;
 import jp.azisaba.lgw.ecplus.listeners.BuyInventoryListener;
@@ -21,6 +9,16 @@ import jp.azisaba.lgw.ecplus.listeners.LoadInventoryDataListener;
 import jp.azisaba.lgw.ecplus.tasks.AutoSaveTask;
 import jp.azisaba.lgw.ecplus.tasks.WaitLoadingTask;
 import jp.azisaba.lgw.ecplus.utils.Chat;
+import lombok.Getter;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class EnderChestPlus extends JavaPlugin {
 
@@ -38,6 +36,10 @@ public class EnderChestPlus extends JavaPlugin {
     @Getter
     private WaitLoadingTask loadingTask;
 
+    public static PluginConfig getPluginConfig() {
+        return config;
+    }
+
     @Override
     public void onEnable() {
 
@@ -54,7 +56,7 @@ public class EnderChestPlus extends JavaPlugin {
         EnderChestPlus.config = new PluginConfig(this);
         EnderChestPlus.config.loadConfig();
 
-        if ( Bukkit.getOnlinePlayers().size() > 0 ) {
+        if (Bukkit.getOnlinePlayers().size() > 0) {
             final List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
             new Thread() {
                 @Override
@@ -85,30 +87,30 @@ public class EnderChestPlus extends JavaPlugin {
         dropItemContainer.save();
 
         Bukkit.getOnlinePlayers().forEach(player -> {
-            if ( player.getOpenInventory() == null ) {
+            if (player.getOpenInventory() == null) {
                 return;
             }
-            if ( player.getOpenInventory().getTopInventory() == null ) {
+            if (player.getOpenInventory().getTopInventory() == null) {
                 return;
             }
-            if ( player.getOpenInventory().getTopInventory().getTitle().startsWith(enderChestTitlePrefix) ) {
+            if (player.getOpenInventory().getTopInventory().getTitle().startsWith(enderChestTitlePrefix)) {
                 ItemStack item = player.getOpenInventory().getCursor();
-                if ( item != null ) {
+                if (item != null) {
                     boolean success = false;
                     HashMap<Integer, ItemStack> slot = player.getInventory().addItem(item);
 
-                    if ( !slot.isEmpty() ) {
+                    if (!slot.isEmpty()) {
                         slot = player.getOpenInventory().getTopInventory().addItem(item);
                         Bukkit.getLogger().info(slot.toString());
 
-                        if ( slot.isEmpty() ) {
+                        if (slot.isEmpty()) {
                             success = true;
                         }
                     } else {
                         success = true;
                     }
 
-                    if ( success ) {
+                    if (success) {
                         player.getOpenInventory().setCursor(null);
                     } else {
                         player.sendMessage(Chat.f("&cインベントリにもエンダーチェストにもアイテムが入らなかったため、地面にドロップしました。"));
@@ -129,9 +131,5 @@ public class EnderChestPlus extends JavaPlugin {
 
         EnderChestPlus.config = new PluginConfig(this);
         EnderChestPlus.config.loadConfig();
-    }
-
-    public static PluginConfig getPluginConfig() {
-        return config;
     }
 }

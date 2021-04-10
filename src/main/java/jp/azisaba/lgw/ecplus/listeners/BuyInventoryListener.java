@@ -1,7 +1,10 @@
 package jp.azisaba.lgw.ecplus.listeners;
 
-import java.util.UUID;
-
+import jp.azisaba.lgw.ecplus.EnderChestPlus;
+import jp.azisaba.lgw.ecplus.InventoryData;
+import jp.azisaba.lgw.ecplus.InventoryLoader;
+import jp.azisaba.lgw.ecplus.utils.Chat;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -11,12 +14,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import lombok.RequiredArgsConstructor;
-
-import jp.azisaba.lgw.ecplus.EnderChestPlus;
-import jp.azisaba.lgw.ecplus.InventoryData;
-import jp.azisaba.lgw.ecplus.InventoryLoader;
-import jp.azisaba.lgw.ecplus.utils.Chat;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 public class BuyInventoryListener implements Listener {
@@ -25,7 +23,7 @@ public class BuyInventoryListener implements Listener {
 
     @EventHandler
     public void onClickedConfirmGUI(InventoryClickEvent e) {
-        if ( !(e.getWhoClicked() instanceof Player) ) {
+        if (!(e.getWhoClicked() instanceof Player)) {
             return;
         }
 
@@ -34,37 +32,37 @@ public class BuyInventoryListener implements Listener {
         Inventory opening = e.getInventory();
         ItemStack clickedItem = e.getCurrentItem();
 
-        if ( !opening.getTitle().startsWith(Chat.f("{0}&a - &cUnlock Page", EnderChestPlus.enderChestTitlePrefix)) ) {
+        if (!opening.getTitle().startsWith(Chat.f("{0}&a - &cUnlock Page", EnderChestPlus.enderChestTitlePrefix))) {
             return;
         }
 
         e.setCancelled(true);
 
-        if ( clicked == null || !clicked.equals(opening) || clickedItem == null ) {
+        if (clicked == null || !clicked.equals(opening) || clickedItem == null) {
             return;
         }
 
         int page;
         try {
             page = Integer.parseInt(Chat.r(opening.getTitle()).substring(Chat.r(opening.getTitle()).lastIndexOf(" ") + 1)) - 1;
-        } catch ( Exception ex ) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             return;
         }
 
-        if ( clickedItem.getType() == Material.SIGN ) {
+        if (clickedItem.getType() == Material.SIGN) {
             return;
         }
         int data = getData(clickedItem);
 
-        if ( data == 5 ) {
+        if (data == 5) {
             boolean success = costPlayer(p, page);
 
-            if ( success ) {
+            if (success) {
 
                 UUID looking = loader.getLookingAt(p);
                 InventoryData data2;
-                if ( looking != null ) {
+                if (looking != null) {
                     data2 = loader.getInventoryData(looking);
                 } else {
                     data2 = loader.getInventoryData(p);
@@ -79,10 +77,10 @@ public class BuyInventoryListener implements Listener {
                 p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
                 p.closeInventory();
             }
-        } else if ( data == 14 ) {
+        } else if (data == 14) {
             UUID looking = loader.getLookingAt(p);
             InventoryData data2;
-            if ( looking != null ) {
+            if (looking != null) {
                 data2 = loader.getInventoryData(looking);
             } else {
                 data2 = loader.getInventoryData(p);
@@ -100,17 +98,17 @@ public class BuyInventoryListener implements Listener {
 
     private boolean costPlayer(Player p, int page) {
         int line = -1;
-        if ( 0 <= page && page < 9 ) {
+        if (0 <= page && page < 9) {
             line = 1;
-        } else if ( 9 <= page && page < 18 ) {
+        } else if (9 <= page && page < 18) {
             line = 2;
-        } else if ( 18 <= page && page < 27 ) {
+        } else if (18 <= page && page < 27) {
             line = 3;
-        } else if ( 27 <= page && page < 36 ) {
+        } else if (27 <= page && page < 36) {
             line = 4;
-        } else if ( 36 <= page && page < 45 ) {
+        } else if (36 <= page && page < 45) {
             line = 5;
-        } else if ( 45 <= page && page < 54 ) {
+        } else if (45 <= page && page < 54) {
             line = 6;
         }
 
@@ -118,40 +116,40 @@ public class BuyInventoryListener implements Listener {
     }
 
     private boolean costPlayerByLine(Player p, int line) {
-        if ( !(0 < line && line <= 6) ) {
+        if (!(0 < line && line <= 6)) {
             return false;
         }
 
-        if ( line <= 2 ) {
+        if (line <= 2) {
             return true;
         }
 
         int emeraldBlockNorma = 0;
         int diamondBlockNorma = 0;
 
-        if ( line == 3 ) {
+        if (line == 3) {
             emeraldBlockNorma = 32;
-        } else if ( line == 4 ) {
+        } else if (line == 4) {
             emeraldBlockNorma = 64;
-        } else if ( line == 5 ) {
+        } else if (line == 5) {
             emeraldBlockNorma = 64;
             diamondBlockNorma = 10;
-        } else if ( line == 6 ) {
+        } else if (line == 6) {
             diamondBlockNorma = 32;
         }
 
         ItemStack[] contents = p.getInventory().getContents().clone();
-        for ( int i = 0; i < 36; i++ ) {
+        for (int i = 0; i < 36; i++) {
             ItemStack item = contents[i];
-            if ( item == null ) {
+            if (item == null) {
                 continue;
             }
 
-            if ( item.getType() == Material.DIAMOND_BLOCK ) {
-                if ( diamondBlockNorma <= 0 ) {
+            if (item.getType() == Material.DIAMOND_BLOCK) {
+                if (diamondBlockNorma <= 0) {
                     continue;
                 }
-                if ( item.getAmount() <= diamondBlockNorma ) {
+                if (item.getAmount() <= diamondBlockNorma) {
                     contents[i] = null;
                     diamondBlockNorma -= item.getAmount();
                 } else {
@@ -159,11 +157,11 @@ public class BuyInventoryListener implements Listener {
                     contents[i] = item;
                     diamondBlockNorma = 0;
                 }
-            } else if ( item.getType() == Material.EMERALD_BLOCK ) {
-                if ( emeraldBlockNorma <= 0 ) {
+            } else if (item.getType() == Material.EMERALD_BLOCK) {
+                if (emeraldBlockNorma <= 0) {
                     continue;
                 }
-                if ( item.getAmount() <= emeraldBlockNorma ) {
+                if (item.getAmount() <= emeraldBlockNorma) {
                     contents[i] = null;
                     emeraldBlockNorma -= item.getAmount();
                 } else {
@@ -174,7 +172,7 @@ public class BuyInventoryListener implements Listener {
             }
         }
 
-        if ( emeraldBlockNorma <= 0 && diamondBlockNorma <= 0 ) {
+        if (emeraldBlockNorma <= 0 && diamondBlockNorma <= 0) {
             p.getInventory().setContents(contents);
             return true;
         }

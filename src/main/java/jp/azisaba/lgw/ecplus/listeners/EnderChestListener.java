@@ -1,7 +1,13 @@
 package jp.azisaba.lgw.ecplus.listeners;
 
-import java.util.UUID;
-
+import com.google.common.base.Strings;
+import jp.azisaba.lgw.ecplus.DropItemContainer;
+import jp.azisaba.lgw.ecplus.EnderChestPlus;
+import jp.azisaba.lgw.ecplus.InventoryData;
+import jp.azisaba.lgw.ecplus.InventoryLoader;
+import jp.azisaba.lgw.ecplus.utils.Chat;
+import lombok.RequiredArgsConstructor;
+import me.rayzr522.jsonmessage.JSONMessage;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
@@ -19,16 +25,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.google.common.base.Strings;
-
-import lombok.RequiredArgsConstructor;
-
-import jp.azisaba.lgw.ecplus.DropItemContainer;
-import jp.azisaba.lgw.ecplus.EnderChestPlus;
-import jp.azisaba.lgw.ecplus.InventoryData;
-import jp.azisaba.lgw.ecplus.InventoryLoader;
-import jp.azisaba.lgw.ecplus.utils.Chat;
-import me.rayzr522.jsonmessage.JSONMessage;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 public class EnderChestListener implements Listener {
@@ -40,25 +37,25 @@ public class EnderChestListener implements Listener {
     @EventHandler
     public void onClickEnderChest(PlayerInteractEvent e) {
         Player p = e.getPlayer();
-        if ( e.getAction() != Action.RIGHT_CLICK_BLOCK ) {
+        if (e.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
         Block b = e.getClickedBlock();
 
-        if ( b.getType() != Material.ENDER_CHEST ) {
+        if (b.getType() != Material.ENDER_CHEST) {
             return;
         }
 
         e.setCancelled(true);
 
-        if ( loader.getLookingAt(p) != null ) {
+        if (loader.getLookingAt(p) != null) {
             loader.setLookingAt(p, null);
         }
 
         InventoryData data = loader.getInventoryData(p);
 
         // nullの場合は読み込み待ち
-        if ( data == null ) {
+        if (data == null) {
             p.sendMessage(Chat.f("&c現在プレイヤーデータのロード中です。しばらくお待ちください..."));
             return;
         }
@@ -70,7 +67,7 @@ public class EnderChestListener implements Listener {
     @SuppressWarnings("deprecation")
     @EventHandler
     public void clickInventory(InventoryClickEvent e) {
-        if ( !(e.getWhoClicked() instanceof Player) ) {
+        if (!(e.getWhoClicked() instanceof Player)) {
             return;
         }
         Player p = (Player) e.getWhoClicked();
@@ -78,17 +75,17 @@ public class EnderChestListener implements Listener {
         Inventory inv = e.getInventory();
         Inventory clickedInv = e.getClickedInventory();
 
-        if ( !inv.getTitle().equals(EnderChestPlus.mainEnderChestTitle) ) {
+        if (!inv.getTitle().equals(EnderChestPlus.mainEnderChestTitle)) {
             return;
         }
 
         e.setCancelled(true);
 
-        if ( clickedInv == null || !clickedInv.equals(inv) || item == null ) {
+        if (clickedInv == null || !clickedInv.equals(inv) || item == null) {
             return;
         }
 
-        if ( item.getData().getData() == (byte) 15 ) {
+        if (item.getData().getData() == (byte) 15) {
             String pageNumStr = Chat.r(item.getItemMeta().getDisplayName());
             pageNumStr = pageNumStr.substring(8, pageNumStr.indexOf("を購入する"));
             int pageNum = Integer.parseInt(pageNumStr);
@@ -99,14 +96,14 @@ public class EnderChestListener implements Listener {
                 String title = Chat.r(item.getItemMeta().getDisplayName());
                 title = title.substring(3, title.indexOf("を開く"));
                 invNum = Integer.parseInt(title);
-            } catch ( Exception ex ) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
                 return;
             }
 
             UUID looking = loader.getLookingAt(p);
             InventoryData data;
-            if ( looking != null ) {
+            if (looking != null) {
                 data = loader.getInventoryData(looking);
             } else {
                 data = loader.getInventoryData(p);
@@ -118,33 +115,33 @@ public class EnderChestListener implements Listener {
 
     @EventHandler
     public void backToMainInventory(InventoryClickEvent e) {
-        if ( !(e.getWhoClicked() instanceof Player) ) {
+        if (!(e.getWhoClicked() instanceof Player)) {
             return;
         }
         Player p = (Player) e.getWhoClicked();
         Inventory inv = e.getInventory();
         Inventory clickedInv = e.getClickedInventory();
 
-        if ( inv.getTitle().equals(EnderChestPlus.mainEnderChestTitle) ) {
+        if (inv.getTitle().equals(EnderChestPlus.mainEnderChestTitle)) {
             return;
         }
-        if ( !inv.getTitle().startsWith(EnderChestPlus.enderChestTitlePrefix) ) {
+        if (!inv.getTitle().startsWith(EnderChestPlus.enderChestTitlePrefix)) {
             return;
         }
-        if ( e.getClick() != ClickType.MIDDLE ) {
+        if (e.getClick() != ClickType.MIDDLE) {
             return;
         }
 
-        if ( e.getCursor() != null && e.getCursor().getType() != Material.AIR ) {
+        if (e.getCursor() != null && e.getCursor().getType() != Material.AIR) {
             e.setCancelled(true);
             p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
             return;
         }
 
-        if ( clickedInv == null ) {
+        if (clickedInv == null) {
             InventoryData data;
             UUID looking = loader.getLookingAt(p);
-            if ( looking != null ) {
+            if (looking != null) {
                 data = loader.getInventoryData(looking);
             } else {
                 data = loader.getInventoryData(p);
@@ -157,27 +154,27 @@ public class EnderChestListener implements Listener {
 
     @EventHandler
     public void nextOrBackInventory(InventoryClickEvent e) {
-        if ( !(e.getWhoClicked() instanceof Player) ) {
+        if (!(e.getWhoClicked() instanceof Player)) {
             return;
         }
         Player p = (Player) e.getWhoClicked();
         Inventory inv = e.getInventory();
         Inventory clickedInv = e.getClickedInventory();
 
-        if ( inv.getTitle().equals(EnderChestPlus.mainEnderChestTitle) ) {
+        if (inv.getTitle().equals(EnderChestPlus.mainEnderChestTitle)) {
             return;
         }
-        if ( !inv.getTitle().startsWith(EnderChestPlus.enderChestTitlePrefix) ) {
+        if (!inv.getTitle().startsWith(EnderChestPlus.enderChestTitlePrefix)) {
             return;
         }
-        if ( clickedInv != null ) {
+        if (clickedInv != null) {
             return;
         }
-        if ( e.getClick() != ClickType.LEFT && e.getClick() != ClickType.RIGHT ) {
+        if (e.getClick() != ClickType.LEFT && e.getClick() != ClickType.RIGHT) {
             return;
         }
 
-        if ( e.getCursor() != null && e.getCursor().getType() != Material.AIR ) {
+        if (e.getCursor() != null && e.getCursor().getType() != Material.AIR) {
             e.setCancelled(true);
             p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
             return;
@@ -186,13 +183,13 @@ public class EnderChestListener implements Listener {
         String title = Chat.r(inv.getTitle());
         int currentInventory = Integer.parseInt(title.substring(title.indexOf("Page") + 5, title.length())) - 1;
         int addNum = 1;
-        if ( e.getClick() == ClickType.LEFT ) {
+        if (e.getClick() == ClickType.LEFT) {
             addNum = -1;
         }
 
         InventoryData data;
         UUID looking = loader.getLookingAt(p);
-        if ( looking != null ) {
+        if (looking != null) {
             data = loader.getInventoryData(looking);
         } else {
             data = loader.getInventoryData(p);
@@ -200,11 +197,11 @@ public class EnderChestListener implements Listener {
 
         int nextInvNum = currentInventory;
         Inventory nextInv = null;
-        while ( nextInvNum >= 0 && nextInvNum <= 54 && nextInv == null ) {
+        while (nextInvNum >= 0 && nextInvNum <= 54 && nextInv == null) {
             nextInvNum += addNum;
             nextInv = data.getInventory(nextInvNum);
         }
-        if ( nextInv == null ) {
+        if (nextInv == null) {
             p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
             return;
         }
@@ -216,16 +213,16 @@ public class EnderChestListener implements Listener {
     public void onDropItem(PlayerDropItemEvent e) {
         Player p = e.getPlayer();
 
-        if ( p.getOpenInventory() == null || p.getOpenInventory().getTopInventory() == null ) {
+        if (p.getOpenInventory() == null || p.getOpenInventory().getTopInventory() == null) {
             return;
         }
 
         Inventory inv = p.getOpenInventory().getTopInventory();
 
-        if ( inv.getTitle().equals(EnderChestPlus.mainEnderChestTitle) ) {
+        if (inv.getTitle().equals(EnderChestPlus.mainEnderChestTitle)) {
             return;
         }
-        if ( !inv.getTitle().startsWith(EnderChestPlus.enderChestTitlePrefix) ) {
+        if (!inv.getTitle().startsWith(EnderChestPlus.enderChestTitlePrefix)) {
             return;
         }
 
@@ -234,13 +231,13 @@ public class EnderChestListener implements Listener {
         ItemStack item = e.getItemDrop().getItemStack().clone();
         InventoryData data = loader.getInventoryData(p);
 
-        if ( canGetItem(p, item) ) {
+        if (canGetItem(p, item)) {
             return;
         }
 
         int page = data.addItemInEmptySlot(item);
 
-        if ( page >= 0 ) {
+        if (page >= 0) {
             p.sendMessage(Chat.f("&cインベントリに空きがないのでエンダーチェストの &a{0}ページ &cにアイテムを追加しました。", page + 1));
             return;
         } else {
@@ -253,7 +250,7 @@ public class EnderChestListener implements Listener {
             msg.newline();
             msg.then(Chat.f("&eアイテム&a: &r{0}", item.getType().toString())).newline();
 
-            if ( item.hasItemMeta() && item.getItemMeta().hasDisplayName() ) {
+            if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
                 msg.then(Chat.f("&e名前&a: &r{0}", item.getItemMeta().getDisplayName())).newline();
             }
 
@@ -274,19 +271,19 @@ public class EnderChestListener implements Listener {
 
     @EventHandler
     public void onCloseInventory(InventoryCloseEvent e) {
-        if ( !(e.getPlayer() instanceof Player) ) {
+        if (!(e.getPlayer() instanceof Player)) {
             return;
         }
         Player p = (Player) e.getPlayer();
 
-        if ( loader.getLookingAt(p) == null ) {
+        if (loader.getLookingAt(p) == null) {
             return;
         }
 
         new BukkitRunnable() {
             @Override
             public void run() {
-                if ( p.getOpenInventory() == null ) {
+                if (p.getOpenInventory() == null) {
                     loader.setLookingAt(p, null);
                 }
             }
@@ -294,16 +291,16 @@ public class EnderChestListener implements Listener {
     }
 
     private boolean canGetItem(Player p, ItemStack item) {
-        if ( p.getInventory().firstEmpty() >= 0 ) {
+        if (p.getInventory().firstEmpty() >= 0) {
             return true;
         }
 
         ItemStack testItem = item.clone();
         testItem.setAmount(1);
         int itemAmount = item.getAmount();
-        for ( int i = 0; i < p.getInventory().getSize(); i++ ) {
+        for (int i = 0; i < p.getInventory().getSize(); i++) {
             ItemStack slotItem = p.getInventory().getItem(i);
-            if ( slotItem == null || slotItem.getType() == Material.AIR ) {
+            if (slotItem == null || slotItem.getType() == Material.AIR) {
                 continue;
             }
 
@@ -311,12 +308,12 @@ public class EnderChestListener implements Listener {
             slotItem = slotItem.clone();
             slotItem.setAmount(1);
 
-            if ( slotItem.equals(testItem) ) {
+            if (slotItem.equals(testItem)) {
                 itemAmount -= slotItem.getMaxStackSize() - slotItemAmount;
             }
         }
 
-        if ( itemAmount <= 0 ) {
+        if (itemAmount <= 0) {
             return true;
         }
 

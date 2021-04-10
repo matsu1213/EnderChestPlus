@@ -1,13 +1,11 @@
 package jp.azisaba.lgw.ecplus.listeners;
 
+import jp.azisaba.lgw.ecplus.InventoryLoader;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-
-import lombok.RequiredArgsConstructor;
-
-import jp.azisaba.lgw.ecplus.InventoryLoader;
 
 @RequiredArgsConstructor
 public class LoadInventoryDataListener implements Listener {

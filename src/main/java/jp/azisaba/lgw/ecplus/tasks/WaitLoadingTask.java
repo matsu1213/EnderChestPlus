@@ -1,18 +1,16 @@
 package jp.azisaba.lgw.ecplus.tasks;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
-
+import jp.azisaba.lgw.ecplus.InventoryData;
+import jp.azisaba.lgw.ecplus.InventoryLoader;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import lombok.RequiredArgsConstructor;
-
-import jp.azisaba.lgw.ecplus.InventoryData;
-import jp.azisaba.lgw.ecplus.InventoryLoader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 public class WaitLoadingTask extends BukkitRunnable {
@@ -28,17 +26,17 @@ public class WaitLoadingTask extends BukkitRunnable {
     @Override
     public void run() {
         // 誰も待機していない場合はreturn
-        if ( waiting.size() <= 0 ) {
+        if (waiting.size() <= 0) {
             return;
         }
 
         List<UUID> removes = new ArrayList<>();
 
-        for ( UUID uuid : waiting.keySet() ) {
+        for (UUID uuid : waiting.keySet()) {
             // プレイヤーを取得
             Player waitingPlayer = Bukkit.getPlayer(uuid);
             // nullの場合は後でMapから削除
-            if ( waitingPlayer == null ) {
+            if (waitingPlayer == null) {
                 removes.add(uuid);
                 continue;
             }
@@ -46,12 +44,12 @@ public class WaitLoadingTask extends BukkitRunnable {
             // 対象プレイヤーのエンチェスを取得
             InventoryData data = loader.getInventoryData(waiting.get(uuid));
             // nullの場合はcontinue
-            if ( data == null ) {
+            if (data == null) {
                 continue;
             }
 
             // プレイヤーと開くエンチェスのUUIDが違う場合はlookingを指定
-            if ( uuid != waiting.get(uuid) ) {
+            if (uuid != waiting.get(uuid)) {
                 loader.setLookingAt(waitingPlayer, waiting.get(uuid));
             }
 
@@ -62,7 +60,7 @@ public class WaitLoadingTask extends BukkitRunnable {
         }
 
         // 削除リストに値があるなら削除する
-        if ( removes.size() > 0 ) {
+        if (removes.size() > 0) {
             removes.forEach(uuid -> waiting.remove(uuid));
         }
     }

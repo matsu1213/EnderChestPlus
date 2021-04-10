@@ -1,19 +1,17 @@
 package jp.azisaba.lgw.ecplus.utils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
- *
  * @author siloneco forked from amata1219 version: 1.0.0
- *
  */
 public class ItemHelper {
 
@@ -26,7 +24,7 @@ public class ItemHelper {
         ItemStack item = new ItemStack(type);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(title);
-        if ( lore.length > 0 ) {
+        if (lore.length > 0) {
             meta.setLore(Arrays.asList(lore));
         }
         item.setItemMeta(meta);
@@ -39,7 +37,7 @@ public class ItemHelper {
 
         meta.setDisplayName(displayName != null ? displayName : "");
 
-        if ( lore == null || lore.length == 0 ) {
+        if (lore == null || lore.length == 0) {
             meta.setLore(new ArrayList<String>());
         } else {
             meta.setLore(Arrays.asList(lore));
@@ -72,7 +70,7 @@ public class ItemHelper {
         try {
             return ItemStack.class.getConstructor(Material.class, int.class, short.class).newInstance(material, 1,
                     (short) data);
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
