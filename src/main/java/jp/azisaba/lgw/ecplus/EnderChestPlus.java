@@ -1,5 +1,8 @@
 package jp.azisaba.lgw.ecplus;
 
+import co.aikar.taskchain.BukkitTaskChainFactory;
+import co.aikar.taskchain.TaskChain;
+import co.aikar.taskchain.TaskChainFactory;
 import jp.azisaba.lgw.ecplus.commands.EnderChestPlusCommand;
 import jp.azisaba.lgw.ecplus.commands.ReceiveDroppedCommand;
 import jp.azisaba.lgw.ecplus.listeners.BuyInventoryListener;
@@ -24,11 +27,12 @@ public class EnderChestPlus extends JavaPlugin {
 
     public static final String enderChestTitlePrefix = Chat.f("&cEnderChest&b+");
     public static final String mainEnderChestTitle = Chat.f("{0} &a- &eMain", enderChestTitlePrefix);
+    public static final int MAX_MAIN_INVENTORY_PAGES = 2;
     private static PluginConfig config;
     @Getter
     private static File inventoryDataFile;
+    private static TaskChainFactory taskChainFactory;
     private AutoSaveTask saveTask;
-
     @Getter
     private DropItemContainer dropItemContainer = null;
     @Getter
@@ -40,8 +44,17 @@ public class EnderChestPlus extends JavaPlugin {
         return config;
     }
 
+    public static <T> TaskChain<T> newChain() {
+        return taskChainFactory.newChain();
+    }
+
+    public static <T> TaskChain<T> newSharedChain(String name) {
+        return taskChainFactory.newSharedChain(name);
+    }
+
     @Override
     public void onEnable() {
+        taskChainFactory = BukkitTaskChainFactory.create(this);
 
         inventoryDataFile = new File(getDataFolder(), "Inventories");
         loader = new InventoryLoader(this);

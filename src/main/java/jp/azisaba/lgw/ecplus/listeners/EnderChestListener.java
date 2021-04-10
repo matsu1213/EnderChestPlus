@@ -11,6 +11,7 @@ import me.rayzr522.jsonmessage.JSONMessage;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.block.EnderChest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -60,7 +61,7 @@ public class EnderChestListener implements Listener {
             return;
         }
 
-        Inventory inv = InventoryLoader.getMainInventory(data);
+        Inventory inv = InventoryLoader.getMainInventory(data, 0);
         p.openInventory(inv);
     }
 
@@ -75,7 +76,7 @@ public class EnderChestListener implements Listener {
         Inventory inv = e.getInventory();
         Inventory clickedInv = e.getClickedInventory();
 
-        if (!inv.getTitle().equals(EnderChestPlus.mainEnderChestTitle)) {
+        if (!inv.getTitle().startsWith(EnderChestPlus.mainEnderChestTitle)) {
             return;
         }
 
@@ -122,7 +123,7 @@ public class EnderChestListener implements Listener {
         Inventory inv = e.getInventory();
         Inventory clickedInv = e.getClickedInventory();
 
-        if (inv.getTitle().equals(EnderChestPlus.mainEnderChestTitle)) {
+        if (inv.getTitle().startsWith(EnderChestPlus.mainEnderChestTitle)) {
             return;
         }
         if (!inv.getTitle().startsWith(EnderChestPlus.enderChestTitlePrefix)) {
@@ -138,6 +139,10 @@ public class EnderChestListener implements Listener {
             return;
         }
 
+        String title = inv.getTitle();
+        int currentInventory = Integer.parseInt(title.substring(title.indexOf("Page") + 5)) - 1;
+        int mainInventoryIndex = currentInventory / 54;
+
         if (clickedInv == null) {
             InventoryData data;
             UUID looking = loader.getLookingAt(p);
@@ -146,9 +151,68 @@ public class EnderChestListener implements Listener {
             } else {
                 data = loader.getInventoryData(p);
             }
-            Inventory mainInv = InventoryLoader.getMainInventory(data);
+            Inventory mainInv = InventoryLoader.getMainInventory(data, mainInventoryIndex);
             p.openInventory(mainInv);
             p.playSound(p.getLocation(), Sound.BLOCK_NOTE_HAT, 1, 1);
+        }
+    }
+
+    @EventHandler
+    public void switchMainInventoryPage(InventoryClickEvent e) {
+        if (!(e.getWhoClicked() instanceof Player)) {
+            return;
+        }
+        Player p = (Player) e.getWhoClicked();
+        Inventory inv = e.getInventory();
+        Inventory clickedInv = e.getClickedInventory();
+
+        if (!inv.getTitle().startsWith(EnderChestPlus.mainEnderChestTitle)) {
+            return;
+        }
+        if (clickedInv != null) {
+            return;
+        }
+        if (e.getClick() != ClickType.LEFT && e.getClick() != ClickType.RIGHT) {
+            return;
+        }
+
+        if (e.getCursor() != null && e.getCursor().getType() != Material.AIR) {
+            e.setCancelled(true);
+            p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+            return;
+        }
+
+        String invTitle = inv.getTitle();
+        int currentOpeningMainInventoryIndex = Integer.parseInt(invTitle.substring(invTitle.lastIndexOf(Chat.f("&a-")) + 6).trim()) - 1;
+
+        if ((currentOpeningMainInventoryIndex == 0 && e.getClick() == ClickType.LEFT)
+                || (currentOpeningMainInventoryIndex == EnderChestPlus.MAX_MAIN_INVENTORY_PAGES - 1 && e.getClick() == ClickType.RIGHT)) {
+            e.setCancelled(true);
+            p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+            return;
+        }
+
+        int nextPageIndex = currentOpeningMainInventoryIndex;
+        if (e.getClick() == ClickType.LEFT) {
+            nextPageIndex -= 1;
+        } else {
+            nextPageIndex += 1;
+        }
+
+        InventoryData data;
+        UUID looking = loader.getLookingAt(p);
+        if (looking != null) {
+            data = loader.getInventoryData(looking);
+        } else {
+            data = loader.getInventoryData(p);
+        }
+
+        Inventory nextOpenMainInv = InventoryLoader.getMainInventory(data, nextPageIndex);
+        if (nextOpenMainInv != null) {
+            p.openInventory(nextOpenMainInv);
+            p.playSound(p.getLocation(), Sound.BLOCK_NOTE_HAT, 1, 1);
+        } else {
+            p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
         }
     }
 
@@ -161,7 +225,7 @@ public class EnderChestListener implements Listener {
         Inventory inv = e.getInventory();
         Inventory clickedInv = e.getClickedInventory();
 
-        if (inv.getTitle().equals(EnderChestPlus.mainEnderChestTitle)) {
+        if (inv.getTitle().startsWith(EnderChestPlus.mainEnderChestTitle)) {
             return;
         }
         if (!inv.getTitle().startsWith(EnderChestPlus.enderChestTitlePrefix)) {
@@ -197,7 +261,7 @@ public class EnderChestListener implements Listener {
 
         int nextInvNum = currentInventory;
         Inventory nextInv = null;
-        while (nextInvNum >= 0 && nextInvNum <= 54 && nextInv == null) {
+        while (nextInvNum >= 0 && nextInvNum <= 108 && nextInv == null) {
             nextInvNum += addNum;
             nextInv = data.getInventory(nextInvNum);
         }
@@ -219,7 +283,7 @@ public class EnderChestListener implements Listener {
 
         Inventory inv = p.getOpenInventory().getTopInventory();
 
-        if (inv.getTitle().equals(EnderChestPlus.mainEnderChestTitle)) {
+        if (inv.getTitle().startsWith(EnderChestPlus.mainEnderChestTitle)) {
             return;
         }
         if (!inv.getTitle().startsWith(EnderChestPlus.enderChestTitlePrefix)) {

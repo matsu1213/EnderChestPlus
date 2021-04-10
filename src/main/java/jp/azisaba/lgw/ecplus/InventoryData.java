@@ -31,7 +31,7 @@ public class InventoryData {
 
         int page = -1;
 
-        for (int i = 0; i < 54; i++) {
+        for (int i = 0; i < EnderChestPlus.MAX_MAIN_INVENTORY_PAGES * 54; i++) {
             if (!inventories.containsKey(i)) {
                 continue;
             }

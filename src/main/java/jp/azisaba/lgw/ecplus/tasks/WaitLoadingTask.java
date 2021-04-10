@@ -54,7 +54,7 @@ public class WaitLoadingTask extends BukkitRunnable {
             }
 
             // インベントリを開く
-            waitingPlayer.openInventory(InventoryLoader.getMainInventory(data));
+            waitingPlayer.openInventory(InventoryLoader.getMainInventory(data, 0));
             // 削除リストに追加
             removes.add(uuid);
         }

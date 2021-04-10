@@ -54,12 +54,12 @@ public class BuyInventoryListener implements Listener {
             return;
         }
         int data = getData(clickedItem);
+        int openMainInventoryIndex = page / 54;
 
         if (data == 5) {
             boolean success = costPlayer(p, page);
 
             if (success) {
-
                 UUID looking = loader.getLookingAt(p);
                 InventoryData data2;
                 if (looking != null) {
@@ -68,7 +68,7 @@ public class BuyInventoryListener implements Listener {
                     data2 = loader.getInventoryData(p);
                 }
                 data2.initializeInventory(page);
-                p.openInventory(InventoryLoader.getMainInventory(data2));
+                p.openInventory(InventoryLoader.getMainInventory(data2, openMainInventoryIndex));
 
                 p.sendMessage(Chat.f("&a購入に成功しました！"));
                 p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BELL, 2, 1);
@@ -85,7 +85,7 @@ public class BuyInventoryListener implements Listener {
             } else {
                 data2 = loader.getInventoryData(p);
             }
-            p.openInventory(InventoryLoader.getMainInventory(data2));
+            p.openInventory(InventoryLoader.getMainInventory(data2, openMainInventoryIndex));
             p.playSound(p.getLocation(), Sound.BLOCK_NOTE_HAT, 1, 1);
         }
         return;
@@ -110,13 +110,15 @@ public class BuyInventoryListener implements Listener {
             line = 5;
         } else if (45 <= page && page < 54) {
             line = 6;
+        } else if (54 <= page && page < 108) {
+            line = 7;
         }
 
         return costPlayerByLine(p, line);
     }
 
     private boolean costPlayerByLine(Player p, int line) {
-        if (!(0 < line && line <= 6)) {
+        if (!(0 < line && line <= 7)) {
             return false;
         }
 
@@ -136,6 +138,8 @@ public class BuyInventoryListener implements Listener {
             diamondBlockNorma = 10;
         } else if (line == 6) {
             diamondBlockNorma = 32;
+        } else {
+            diamondBlockNorma = 64;
         }
 
         ItemStack[] contents = p.getInventory().getContents().clone();

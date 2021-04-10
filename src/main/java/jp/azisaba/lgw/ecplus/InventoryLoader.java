@@ -19,11 +19,14 @@ public class InventoryLoader {
     private final HashMap<UUID, InventoryData> invs = new HashMap<>();
     private final HashMap<Player, UUID> adminLookingAt = new HashMap<>();
 
-    public static Inventory getMainInventory(InventoryData data) {
-        Inventory mainInv = Bukkit.createInventory(null, 9 * 6, EnderChestPlus.mainEnderChestTitle);
+    public static Inventory getMainInventory(InventoryData data, int index) {
+        if (index < 0 || EnderChestPlus.MAX_MAIN_INVENTORY_PAGES - 1 < index) {
+            return null;
+        }
+        Inventory mainInv = Bukkit.createInventory(null, 9 * 6, EnderChestPlus.mainEnderChestTitle + Chat.f(" &a- &e{0}", index + 1));
 
         for (int i = 0; i < mainInv.getSize(); i++) {
-            Inventory inv = data.getInventory(i);
+            Inventory inv = data.getInventory((index * 54) + i);
             if (inv != null) {
                 double percentage = getPercentage(inv);
                 ItemStack item = null;
@@ -36,11 +39,11 @@ public class InventoryLoader {
                     item = getHighPane();
                 }
 
-                ItemHelper.setDisplayName(item, Chat.f("&aページ&e{0}&aを開く", i + 1));
+                ItemHelper.setDisplayName(item, Chat.f("&aページ&e{0}&aを開く", (index * 54) + i + 1));
                 ItemHelper.setLore(item, getLore(inv, 5));
                 mainInv.setItem(i, item);
             } else {
-                ItemStack item = getBuyPane(i);
+                ItemStack item = getBuyPane((index * 54) + i);
                 mainInv.setItem(i, item);
             }
         }
@@ -82,6 +85,8 @@ public class InventoryLoader {
             lore.add(Chat.f("&7  - &b&lダイヤモンドブロック&7x10"));
         } else if (45 <= page && page < 54) {
             lore.add(Chat.f("&7  - &b&lダイヤモンドブロック&7x32"));
+        } else if (54 <= page && page < EnderChestPlus.MAX_MAIN_INVENTORY_PAGES * 54) {
+            lore.add(Chat.f("&7  - &b&lダイヤモンドブロック&7x64"));
         }
 
         ItemHelper.setLore(buyPane, lore);
