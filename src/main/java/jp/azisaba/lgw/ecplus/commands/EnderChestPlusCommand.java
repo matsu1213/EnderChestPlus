@@ -67,10 +67,7 @@ public class EnderChestPlusCommand implements CommandExecutor {
                         if (inv.getTopInventory().getTitle() == null) {
                             return false;
                         }
-                        if (inv.getTopInventory().getTitle().startsWith(EnderChestPlus.enderChestTitlePrefix)) {
-                            return true;
-                        }
-                        return false;
+                        return inv.getTopInventory().getTitle().startsWith(EnderChestPlus.enderChestTitlePrefix);
                     }).map(Player::getName)
                     .collect(Collectors.toList());
 
