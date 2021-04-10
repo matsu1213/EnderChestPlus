@@ -49,6 +49,14 @@ public class EnderChestListener implements Listener {
 
         e.setCancelled(true);
 
+        if (!plugin.isAllowOpenEnderChest()) {
+            p.sendMessage(Chat.f("&c現在エンダーチェストは無効化されています。運営が再度有効化するまでお待ちください。"));
+            if (p.hasPermission("enderchestplus.command.enderchestplus")) {
+                p.sendMessage(Chat.f("&eあなたは運営なので、&c/ecp enable &eで解除することができます。\n他の運営がエンチェスのメンテナンスをしていないか確認してから実行してください。"));
+            }
+            return;
+        }
+
         if (loader.getLookingAt(p) != null) {
             loader.setLookingAt(p, null);
         }

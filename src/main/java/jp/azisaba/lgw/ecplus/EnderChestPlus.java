@@ -12,6 +12,7 @@ import jp.azisaba.lgw.ecplus.listeners.LoadInventoryDataListener;
 import jp.azisaba.lgw.ecplus.tasks.AutoSaveTask;
 import jp.azisaba.lgw.ecplus.utils.Chat;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -33,6 +34,9 @@ public class EnderChestPlus extends JavaPlugin {
     private DropItemContainer dropItemContainer = null;
     @Getter
     private InventoryLoader loader = null;
+    @Getter
+    @Setter
+    private boolean allowOpenEnderChest = true;
 
     public static PluginConfig getPluginConfig() {
         return config;
