@@ -46,7 +46,7 @@
                     <relocations>
                         <relocation>
                             <pattern>co.aikar.taskchain</pattern>
-                            <shadedPattern>com.github.siloneco.taskchaintest.taskchain
+                            <shadedPattern>jp.azisaba.lgw.ecplus.depends.taskchain
                             </shadedPattern>
                         </relocation>
                     </relocations>
