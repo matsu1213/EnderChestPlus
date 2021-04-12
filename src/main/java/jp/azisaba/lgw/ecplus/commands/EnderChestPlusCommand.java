@@ -113,6 +113,7 @@ public class EnderChestPlusCommand implements CommandExecutor {
                     .syncLast((uuid) -> {
                         if (p.isOnline()) {
                             InventoryData data = loader.getInventoryData(uuid);
+                            loader.setLookingAt(p, uuid);
                             p.openInventory(InventoryLoader.getMainInventory(data, 0));
                         }
                     }).execute();
