@@ -1,7 +1,7 @@
 # EnderChestPlus plugin (for Azisaba)
 
 <!-- [![CircleCI](https://circleci.com/gh/AzisabaNetwork/LeonGunWar.svg?style=svg)](https://circleci.com/gh/AzisabaNetwork/LeonGunWar) -->
-[![Discord](https://discordapp.com/api/guilds/357134045328572418/widget.png)](https://discord.gg/seheC2W)
+[![Discord](https://discordapp.com/api/guilds/357134045328572418/widget.png)](https://discord.gg/azisaba)
 [![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE)
 
 このプラグインは [アジ鯖](https://azisaba.net) 内にあるLGWサーバーで使われるエンダーチェスト用のPluginです
