@@ -154,7 +154,7 @@ public class InventoryLoader {
         }
 
         if (lore.size() >= lines) {
-            lore.set(lines - 1, Chat.f("&7(その他{0}アイテム", lore.size() - (lines - 1)));
+            lore.set(lines - 1, Chat.f("&7(その他{0}アイテム)", lore.size() - (lines - 1)));
             lore = lore.subList(0, lines);
         }
 
