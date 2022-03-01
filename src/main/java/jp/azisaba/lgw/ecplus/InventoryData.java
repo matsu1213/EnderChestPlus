@@ -19,12 +19,18 @@ public class InventoryData {
     private UUID uuid = null;
 
     public InventoryData(Player p) {
-        new InventoryData(p.getUniqueId());
+        this(p.getUniqueId(), true);
     }
 
     public InventoryData(UUID uuid) {
+        this(uuid, true);
+    }
+
+    private InventoryData(UUID uuid, boolean load) {
         this.uuid = uuid;
-        load();
+        if (load) {
+            load();
+        }
     }
 
     public int addItemInEmptySlot(ItemStack item) {
@@ -154,6 +160,25 @@ public class InventoryData {
     public void initializeInventory(int page) {
         inventories.put(page,
                 Bukkit.createInventory(null, 9 * 6, Chat.f("{0} &e- &cPage {1}", EnderChestPlus.enderChestTitlePrefix, page + 1)));
+    }
+
+    public InventoryData migrateAs(UUID uuid) {
+        InventoryData data = new InventoryData(uuid, false);
+        for (int i = 0; i < EnderChestPlus.MAX_MAIN_INVENTORY_PAGES * 54; i++) {
+            Inventory inv = inventories.getOrDefault(i, null);
+            if (inv == null) {
+                continue;
+            }
+            Inventory newInv = Bukkit.createInventory(null, inv.getSize(), inv.getName());
+
+            for (int index = 0; index < inv.getSize(); index++) {
+                ItemStack item = inv.getItem(index);
+                newInv.setItem(index, item);
+            }
+
+            data.inventories.put(i, newInv);
+        }
+        return data;
     }
 
     private int isPositive(String str) {

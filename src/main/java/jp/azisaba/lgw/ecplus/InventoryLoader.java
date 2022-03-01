@@ -225,4 +225,19 @@ public class InventoryLoader {
         }
         return null;
     }
+
+    public boolean migrate(UUID from, UUID to) {
+        if (!invs.containsKey(from)) {
+            loadInventoryData(from);
+        }
+
+        InventoryData data = invs.get(from);
+        if (data == null) {
+            return false;
+        }
+        InventoryData migratedData = data.migrateAs(to);
+
+        invs.put(to, migratedData);
+        return true;
+    }
 }

@@ -1,5 +1,10 @@
 package jp.azisaba.lgw.ecplus.commands;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import jp.azisaba.lgw.ecplus.EnderChestPlus;
 import jp.azisaba.lgw.ecplus.InventoryData;
 import jp.azisaba.lgw.ecplus.InventoryLoader;
@@ -14,10 +19,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
-
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class EnderChestPlusCommand implements CommandExecutor {
@@ -91,44 +92,102 @@ public class EnderChestPlusCommand implements CommandExecutor {
 
             p.sendMessage(Chat.f("&a非同期でデータをロード中です。完了し次第開きます"));
             EnderChestPlus.newChain()
-                    .asyncFirst(() -> {
-                        try {
-                            return UUIDUtils.getUUID(args[1]);
-                        } catch (APIException e) {
-                            p.sendMessage(Chat.f("&cUUIDの取得に失敗しました。(MojangAPIのレートリミット)"));
-                        } catch (InvalidPlayerException e) {
-                            p.sendMessage(Chat.f("&cUUIDの取得に失敗しました。(そのMCIDのプレイヤーは存在しません)"));
-                        } catch (Exception e) {
-                            String className = e.getClass().getName();
-                            if (className.contains(".")) {
-                                className = className.substring(className.lastIndexOf(".") + 1);
+                .asyncFirst(() -> {
+                    try {
+                        return UUIDUtils.getUUID(args[1]);
+                    } catch (APIException e) {
+                        p.sendMessage(Chat.f("&cUUIDの取得に失敗しました。(MojangAPIのレートリミット)"));
+                    } catch (InvalidPlayerException e) {
+                        p.sendMessage(Chat.f("&cUUIDの取得に失敗しました。(そのMCIDのプレイヤーは存在しません)"));
+                    } catch (Exception e) {
+                        String className = e.getClass().getName();
+                        if (className.contains(".")) {
+                            className = className.substring(className.lastIndexOf(".") + 1);
+                        }
+                        p.sendMessage(Chat.f("&cUUIDの取得に失敗しました。({0})", className));
+                    }
+                    return null;
+                }).abortIfNull()
+                .storeAsData("uuid")
+                .asyncLast(loader::loadInventoryData)
+                .<UUID>returnData("uuid")
+                .syncLast((uuid) -> {
+                    if (p.isOnline()) {
+                        InventoryData data = loader.getInventoryData(uuid);
+                        loader.setLookingAt(p, uuid);
+                        p.openInventory(InventoryLoader.getMainInventory(data, 0));
+                    }
+                }).execute();
+            return true;
+        } else if (args[0].equalsIgnoreCase("migrate")) {
+            if (args.length <= 2) {
+                sender.sendMessage(Chat.f("&cUsage: /" + label + " migrate <from> <to>"));
+                return true;
+            }
+
+            EnderChestPlus.newChain()
+                .async(() -> {
+                    UUID from, to;
+                    try {
+                        from = UUIDUtils.getUUID(args[1]);
+                        to = UUIDUtils.getUUID(args[2]);
+                    } catch (APIException e) {
+                        sender.sendMessage(Chat.f("&cUUIDの取得に失敗しました。(MojangAPIのレートリミット)"));
+                        return;
+                    } catch (IOException e) {
+                        sender.sendMessage(Chat.f("&cUUIDの取得に失敗しました。(不明なエラー)"));
+                        return;
+                    } catch (InvalidPlayerException e) {
+                        sender.sendMessage(Chat.f("&cUUIDの取得に失敗しました。(不明なプレイヤー)"));
+                        return;
+                    }
+
+                    if (from == null || to == null) {
+                        sender.sendMessage(Chat.f("&cUUIDの取得に失敗しました。(不明なプレイヤー)"));
+                        return;
+                    }
+
+                    boolean isOpening = Stream.of(from, to)
+                        .map(Bukkit::getPlayer)
+                        .anyMatch(player -> {
+                            if (player == null) {
+                                return false;
                             }
-                            p.sendMessage(Chat.f("&cUUIDの取得に失敗しました。({0})", className));
-                        }
-                        return null;
-                    }).abortIfNull()
-                    .storeAsData("uuid")
-                    .asyncLast(loader::loadInventoryData)
-                    .<UUID>returnData("uuid")
-                    .syncLast((uuid) -> {
-                        if (p.isOnline()) {
-                            InventoryData data = loader.getInventoryData(uuid);
-                            loader.setLookingAt(p, uuid);
-                            p.openInventory(InventoryLoader.getMainInventory(data, 0));
-                        }
-                    }).execute();
+                            InventoryView inv = player.getOpenInventory();
+                            if (inv == null) {
+                                return false;
+                            }
+                            if (inv.getTopInventory() == null) {
+                                return false;
+                            }
+                            if (inv.getTopInventory().getTitle() == null) {
+                                return false;
+                            }
+                            return inv.getTopInventory().getTitle()
+                                .startsWith(EnderChestPlus.enderChestTitlePrefix);
+                        });
+
+                    if (isOpening) {
+                        sender.sendMessage(Chat.f("&c対象のプレイヤーがエンダーチェストを開いているため、移行を実行できません"));
+                        return;
+                    }
+
+                    sender.sendMessage(Chat.f("&e移行しています..."));
+                    plugin.getLoader().migrate(from, to);
+                    sender.sendMessage(Chat.f("&a移行が完了しました！"));
+                }).execute();
             return true;
         }
-
         sendUsage(p, label);
         return true;
     }
 
     private void sendUsage(Player p, String label) {
         p.sendMessage(Chat.f("&e/{0} open <Player/UUID> &7- &aECを開きます", label) + "\n"
-                + Chat.f("&e/{0} save &7- &a非同期で全プレイヤーのECをセーブします", label) + "\n"
-                + Chat.f("&e/{0} enable &7- &aエンダーチェストを有効化します", label) + "\n"
-                + Chat.f("&e/{0} disable &7- &aエンダーチェストを無効化します", label) + "\n"
-                + Chat.f("&e/{0} openingPlayer &7- &aエンダーチェストを開いているプレイヤーを取得します", label) + "\n");
+            + Chat.f("&e/{0} save &7- &a非同期で全プレイヤーのECをセーブします", label) + "\n"
+            + Chat.f("&e/{0} enable &7- &aエンダーチェストを有効化します", label) + "\n"
+            + Chat.f("&e/{0} disable &7- &aエンダーチェストを無効化します", label) + "\n"
+            + Chat.f("&e/{0} migrate &7- &aエンダーチェストの内容を移行します", label) + "\n"
+            + Chat.f("&e/{0} openingPlayer &7- &aエンダーチェストを開いているプレイヤーを取得します", label) + "\n");
     }
 }
