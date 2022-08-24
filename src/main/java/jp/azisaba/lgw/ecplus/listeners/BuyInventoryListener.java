@@ -121,8 +121,14 @@ public class BuyInventoryListener implements Listener {
         } else if (line <= 9) {
             diamondBlockNorma = 64;
         } else {
-            emeraldBlockNorma = 64;
-            diamondBlockNorma = 64;
+            int mainPageNum = (line - 1) / 6 + 1;
+            boolean isBottomThreeLine = (line - 1) % 6 >= 3;
+
+            emeraldBlockNorma = (mainPageNum - 1) * 64;
+            diamondBlockNorma = (mainPageNum - 2) * 64;
+            if (isBottomThreeLine) {
+                diamondBlockNorma += 64;
+            }
         }
 
         ItemStack[] contents = p.getInventory().getContents().clone();

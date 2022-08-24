@@ -268,7 +268,8 @@ public class EnderChestListener implements Listener {
 
         int nextInvNum = currentInventory;
         Inventory nextInv = null;
-        while (nextInvNum >= 0 && nextInvNum <= 108 && nextInv == null) {
+        while (nextInvNum >= 0 && nextInvNum <= 54 * EnderChestPlus.MAX_MAIN_INVENTORY_PAGES
+            && nextInv == null) {
             nextInvNum += addNum;
             nextInv = data.getInventory(nextInvNum);
         }

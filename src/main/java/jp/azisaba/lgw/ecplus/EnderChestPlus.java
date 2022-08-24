@@ -24,7 +24,7 @@ public class EnderChestPlus extends JavaPlugin {
 
     public static final String enderChestTitlePrefix = Chat.f("&cEnderChest&b+");
     public static final String mainEnderChestTitle = Chat.f("{0} &a- &eMain", enderChestTitlePrefix);
-    public static final int MAX_MAIN_INVENTORY_PAGES = 2;
+    public static final int MAX_MAIN_INVENTORY_PAGES = 5;
     private static PluginConfig config;
     @Getter
     private static File inventoryDataFile;
