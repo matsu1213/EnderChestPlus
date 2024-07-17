@@ -83,7 +83,7 @@ public class EnderChestListener implements Listener {
         Inventory inv = e.getInventory();
         Inventory clickedInv = e.getClickedInventory();
 
-        if (!inv.getTitle().startsWith(EnderChestPlus.mainEnderChestTitle)) {
+        if (!e.getView().getTitle().startsWith(EnderChestPlus.mainEnderChestTitle)) {
             return;
         }
 
@@ -130,10 +130,10 @@ public class EnderChestListener implements Listener {
         Inventory inv = e.getInventory();
         Inventory clickedInv = e.getClickedInventory();
 
-        if (inv.getTitle().startsWith(EnderChestPlus.mainEnderChestTitle)) {
+        if (e.getView().getTitle().startsWith(EnderChestPlus.mainEnderChestTitle)) {
             return;
         }
-        if (!inv.getTitle().startsWith(EnderChestPlus.enderChestTitlePrefix)) {
+        if (!e.getView().getTitle().startsWith(EnderChestPlus.enderChestTitlePrefix)) {
             return;
         }
         if (e.getClick() != ClickType.MIDDLE) {
@@ -146,7 +146,7 @@ public class EnderChestListener implements Listener {
             return;
         }
 
-        String title = inv.getTitle();
+        String title = e.getView().getTitle();
         int currentInventory = Integer.parseInt(title.substring(title.indexOf("Page") + 5)) - 1;
         int mainInventoryIndex = currentInventory / 54;
 
@@ -173,7 +173,7 @@ public class EnderChestListener implements Listener {
         Inventory inv = e.getInventory();
         Inventory clickedInv = e.getClickedInventory();
 
-        if (!inv.getTitle().startsWith(EnderChestPlus.mainEnderChestTitle)) {
+        if (!e.getView().getTitle().startsWith(EnderChestPlus.mainEnderChestTitle)) {
             return;
         }
         if (clickedInv != null) {
@@ -189,7 +189,7 @@ public class EnderChestListener implements Listener {
             return;
         }
 
-        String invTitle = inv.getTitle();
+        String invTitle = e.getView().getTitle();
         int currentOpeningMainInventoryIndex = Integer.parseInt(invTitle.substring(invTitle.lastIndexOf(Chat.f("&a-")) + 6).trim()) - 1;
 
         if ((currentOpeningMainInventoryIndex == 0 && e.getClick() == ClickType.LEFT)
@@ -232,10 +232,10 @@ public class EnderChestListener implements Listener {
         Inventory inv = e.getInventory();
         Inventory clickedInv = e.getClickedInventory();
 
-        if (inv.getTitle().startsWith(EnderChestPlus.mainEnderChestTitle)) {
+        if (e.getView().getTitle().startsWith(EnderChestPlus.mainEnderChestTitle)) {
             return;
         }
-        if (!inv.getTitle().startsWith(EnderChestPlus.enderChestTitlePrefix)) {
+        if (!e.getView().getTitle().startsWith(EnderChestPlus.enderChestTitlePrefix)) {
             return;
         }
         if (clickedInv != null) {
@@ -251,7 +251,7 @@ public class EnderChestListener implements Listener {
             return;
         }
 
-        String title = Chat.r(inv.getTitle());
+        String title = Chat.r(e.getView().getTitle());
         int currentInventory = Integer.parseInt(title.substring(title.indexOf("Page") + 5, title.length())) - 1;
         int addNum = 1;
         if (e.getClick() == ClickType.LEFT) {
@@ -291,10 +291,10 @@ public class EnderChestListener implements Listener {
 
         Inventory inv = p.getOpenInventory().getTopInventory();
 
-        if (inv.getTitle().startsWith(EnderChestPlus.mainEnderChestTitle)) {
+        if (p.getOpenInventory().getTitle().startsWith(EnderChestPlus.mainEnderChestTitle)) {
             return;
         }
-        if (!inv.getTitle().startsWith(EnderChestPlus.enderChestTitlePrefix)) {
+        if (!p.getOpenInventory().getTitle().startsWith(EnderChestPlus.enderChestTitlePrefix)) {
             return;
         }
 
