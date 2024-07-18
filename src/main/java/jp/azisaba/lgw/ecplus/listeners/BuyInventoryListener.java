@@ -32,7 +32,7 @@ public class BuyInventoryListener implements Listener {
         Inventory opening = e.getInventory();
         ItemStack clickedItem = e.getCurrentItem();
 
-        if (!opening.getTitle().startsWith(Chat.f("{0}&a - &cUnlock Page", EnderChestPlus.enderChestTitlePrefix))) {
+        if (!e.getView().getTitle().startsWith(Chat.f("{0}&a - &cUnlock Page", EnderChestPlus.enderChestTitlePrefix))) {
             return;
         }
 
@@ -44,7 +44,7 @@ public class BuyInventoryListener implements Listener {
 
         int page;
         try {
-            page = Integer.parseInt(Chat.r(opening.getTitle()).substring(Chat.r(opening.getTitle()).lastIndexOf(" ") + 1)) - 1;
+            page = Integer.parseInt(Chat.r(e.getView().getTitle()).substring(Chat.r(e.getView().getTitle()).lastIndexOf(" ") + 1)) - 1;
         } catch (Exception ex) {
             ex.printStackTrace();
             return;
