@@ -65,10 +65,10 @@ public class EnderChestPlusCommand implements CommandExecutor {
                         if (inv.getTopInventory() == null) {
                             return false;
                         }
-                        if (inv.getTopInventory().getTitle() == null) {
+                        if (inv.getTitle() == null) {
                             return false;
                         }
-                        return inv.getTopInventory().getTitle().startsWith(EnderChestPlus.enderChestTitlePrefix);
+                        return inv.getTitle().startsWith(EnderChestPlus.enderChestTitlePrefix);
                     }).map(Player::getName)
                     .collect(Collectors.toList());
 
@@ -160,10 +160,10 @@ public class EnderChestPlusCommand implements CommandExecutor {
                             if (inv.getTopInventory() == null) {
                                 return false;
                             }
-                            if (inv.getTopInventory().getTitle() == null) {
+                            if (inv.getTitle() == null) {
                                 return false;
                             }
-                            return inv.getTopInventory().getTitle()
+                            return inv.getTitle()
                                 .startsWith(EnderChestPlus.enderChestTitlePrefix);
                         });
 
